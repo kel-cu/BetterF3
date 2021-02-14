@@ -1,20 +1,12 @@
 <div style="text-align: center;"><h1 >BetterF3 Forge</h1>
-<p>
-  <a href="https://www.curseforge.com/minecraft/mc-mods/betterf3/files" target="_blank"><img alt="Version" 
-src="https://img.shields.
-io/badge/dynamic/json?
-color=ed37aa&label=Version&query=%24%5B%27promos%27%5D%5B%271.16.5-latest%27%5D&url=https%3A%2F%2Fraw.
-githubusercontent.com%2FTreyRuffy%2FBetterF3%2F1.16.4-Forge%2Fupdate.json?cacheSeconds=2592000" /></a>
-  <a href="http://files.minecraftforge.net/" target="_blank"><img alt="Minecraft Versions" src="https://img.
-shields.
-io/badge/Minecraft-1.16.2--1.16.5-9450cc" /></a>
-  <a href="https://github.com/TreyRuffy/BetterF3/blob/1.16.4-Forge/COPYING" target="_blank">
-    <img alt="License: GPLv3" src="https://img.shields.io/badge/License-GPLv3-2230f2.svg" />
-  </a><br>
-  <a href="https://twitter.com/TreyRuffy" target="_blank">
-    <img alt="Twitter: TreyRuffy" src="https://img.shields.io/twitter/follow/TreyRuffy.svg?style=social" />
-  </a>
-</p>
+
+
+[![Version](https://img.shields.io/badge/dynamic/json?color=ed37aa&label=Version&query=%24%5B%27promos%27%5D%5B%271.16.5-latest%27%5D&url=https%3A%2F%2Fraw.githubusercontent.com%2FTreyRuffy%2FBetterF3%2F1.16.4-Forge%2Fupdate.json?cacheSeconds=2592000)](https://www.curseforge.com/minecraft/mc-mods/betterf3/files)
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.16.2--1.16.5-9450cc)](http://files.minecraftforge.net/)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-2230f2.svg)](https://github.com/TreyRuffy/BetterF3/blob/1.16.4-Forge/COPYING)
+<br/>
+[![Twitter: TreyRuffy](https://img.shields.io/twitter/follow/TreyRuffy.svg?style=social)](https://twitter.com/TreyRuffy)
+
 </div>
 
 <blockquote style="text-align: center;">BetterF3 is a mod that replaces Minecraft's original debug HUD 
