@@ -9,7 +9,6 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -18,13 +17,11 @@ import java.util.List;
 public class ServerModule extends BaseModule{
 
     public ServerModule() {
-
         this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GRAY);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
-
 
         lines.add(new DebugLine("server_tick", "format.betterf3.server_tick", true));
         lines.add(new DebugLine("packets_sent"));
@@ -33,11 +30,9 @@ public class ServerModule extends BaseModule{
         for (DebugLine line : lines) {
             line.inReducedDebug = true;
         }
-
     }
 
     public void update(Minecraft client) {
-
         IntegratedServer integratedServer = client.getIntegratedServer();
 
         String serverString = "";
@@ -54,7 +49,6 @@ public class ServerModule extends BaseModule{
 
             lines.get(1).setValue(Math.round(packetsSent));
             lines.get(2).setValue(Math.round(packetsReceived));
-
         }
         String tickString = "";
         if (integratedServer != null) {
@@ -68,12 +62,6 @@ public class ServerModule extends BaseModule{
             serverStringList.remove(1);
 
         }
-
         lines.get(0).setValue(serverStringList);
-
-
-
     }
-
-
 }

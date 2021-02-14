@@ -21,13 +21,11 @@ public class DebugLineList extends DebugLine {
     }
 
     public Collection<ITextComponent> toTexts(Color nameColor, Color valueColor) {
-
         List<ITextComponent> texts = new ArrayList<>();
 
         for (String v : values) {
             texts.add(Utils.getFormattedFromString(v, nameColor, valueColor));
         }
-
         return texts;
     }
 }

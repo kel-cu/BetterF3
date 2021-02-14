@@ -8,18 +8,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TranslationTextComponent;
 
-
 public class ModConfigScreen extends Screen {
-
 
     public ModConfigScreen() {
         super(new TranslationTextComponent("config.betterf3.title.config"));
     }
+
     @Override
     public void init() {
-
         Minecraft client = Minecraft.getInstance();
-
 
         this.addButton(new Button(this.width / 2 - 130, this.height/4, 120, 20, new TranslationTextComponent(
                 "config.bettef3.order_left_button"),
@@ -31,8 +28,6 @@ public class ModConfigScreen extends Screen {
 
         this.addButton(new Button(this.width / 2 - 130, this.height - 50, 260, 20,
                 new TranslationTextComponent("config.betterf3.modules.done_button"), (buttonWidget) -> client.displayGuiScreen(null)));
-
-
     }
 
     @Override
@@ -40,8 +35,5 @@ public class ModConfigScreen extends Screen {
         this.renderBackground(matrices);
         drawCenteredString(matrices, this.font, this.title, this.width / 2, 20, 16777215);
         super.render(matrices, mouseX, mouseY, delta);
-
     }
-
-
 }

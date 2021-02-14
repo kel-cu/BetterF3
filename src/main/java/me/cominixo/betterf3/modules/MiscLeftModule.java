@@ -14,9 +14,7 @@ public class MiscLeftModule extends BaseModule{
     private static final List<String> VANILLA_DEBUG_LEFT = Arrays.asList("Minecraft", "Integrated", "C:", "E:", "P:", "Client", "ServerChunkCache:", "minecraft:overworld", "XYZ:", "Block:", "Chunk:", "Facing:", "Waiting", "SC:", "Sounds:", "CH", "SH", "Server Light:", "Biome:", "Local Difficulty:");
     private int leftSideSize = 0;
 
-
     public MiscLeftModule() {
-
         this.defaultNameColor = Color.fromInt(0xfdfd96);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
 
@@ -27,7 +25,6 @@ public class MiscLeftModule extends BaseModule{
         leftDebugLines.inReducedDebug = true;
 
         lines.add(leftDebugLines);
-
     }
 
     public void update(Minecraft client) {
@@ -35,15 +32,12 @@ public class MiscLeftModule extends BaseModule{
     }
 
     public void update(List<String> lines) {
-
         // Parse lines to find non-vanilla lines, it's a mess
         if (lines.size() != leftSideSize) {
-
             // copy of list for .remove()
             List<String> listCopy = new ArrayList<>(lines);
 
             for (String s : listCopy) {
-
                 if (s.isEmpty()) {
                     lines.remove(s);
                 }
@@ -67,10 +61,6 @@ public class MiscLeftModule extends BaseModule{
             }
             leftSideSize = lines.size();
         }
-
         ((DebugLineList) this.lines.get(0)).setValues(lines);
-
     }
-
-
 }

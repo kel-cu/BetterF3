@@ -11,6 +11,7 @@
   "format.betterf3.rotation": "Yaw: %s  Pitch: %s",
 
   "config.betterf3.title": "BetterF3",
+  "config.betterf3.need_cloth_config": "You need ClothConfig to be able to open the settings in game.",
   "config.betterf3.title.general": "General",
   "config.betterf3.title.config": "Config",
   "config.betterf3.title.modules": "Edit Modules",
@@ -37,8 +38,8 @@
   "config.betterf3.color.y.tooltip": "Change the color of the Y coordinate of every line in this module.",
   "config.betterf3.color.z.tooltip": "Change the color of the Z coordinate of every line in this module.",
   "config.betterf3.color.fps.high": "Fps High Color",
-  "config.betterf3.color.fps.medium": "Fps Medium Color",
-  "config.betterf3.color.fps.low": "Fps Low Color",
+  "config.betterf3.color.fps.medium": "FPS Medium Color",
+  "config.betterf3.color.fps.low": "FPS Low Color",
   "config.betterf3.color.fps.high.tooltip": "Change the color of the text when the FPS is high.",
   "config.betterf3.color.fps.medium.tooltip": "Change the color of the text when the FPS is medium.",
   "config.betterf3.color.fps.low.tooltip": "Change the color of the text when the FPS is low.",
@@ -180,5 +181,7 @@
   "text.betterf3.line.block_states": "Block States",
   "text.betterf3.line.block_tags": "Block Tags",
   "text.betterf3.line.fluid_states": "Fluid States",
-  "text.betterf3.line.fluid_tags": "Fluid Tags"
+  "text.betterf3.line.fluid_tags": "Fluid Tags",
+  "text.betterf3.line.nothing": "Blank Line",
+  "text.betterf3.line.nothing2": "Another Blank Line"
 }

@@ -14,9 +14,7 @@ public class MiscRightModule extends BaseModule{
     private static final List<String> VANILLA_DEBUG_RIGHT = Arrays.asList("Java:", "Mem:", "Allocated:", "CPU:", "Display:");
     private final int rightSideSize = 0;
 
-
     public MiscRightModule() {
-
         this.defaultNameColor = Color.fromInt(0xfdfd96);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
 
@@ -35,11 +33,8 @@ public class MiscRightModule extends BaseModule{
     }
 
     public void update(List<String> lines) {
-
-
         // Parse lines to find non-vanilla lines, it's a mess
         if (lines.size() != rightSideSize) {
-
             // boolean that indicates if we're on the "targeted" section, we have no other way of knowing when it starts/ends
             boolean inTargeted = false;
 
@@ -47,7 +42,6 @@ public class MiscRightModule extends BaseModule{
             List<String> listCopy = new ArrayList<>(lines);
 
             for (String s : listCopy) {
-
                 if (s.isEmpty()) {
                     inTargeted = false;
                     lines.remove(s);
@@ -67,7 +61,6 @@ public class MiscRightModule extends BaseModule{
                 }
 
                 for (String vanilla : VANILLA_DEBUG_RIGHT) {
-
                     int index = listCopy.indexOf(s);
 
                     if (s.startsWith(vanilla)) {
@@ -84,10 +77,6 @@ public class MiscRightModule extends BaseModule{
             }
 
         }
-
         ((DebugLineList)this.lines.get(0)).setValues(lines);
-
     }
-
-
 }

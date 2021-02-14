@@ -12,5 +12,4 @@ public interface ChunkArrayAccessor {
 
     @Accessor
     AtomicReferenceArray<Chunk> getChunks();
-
 }

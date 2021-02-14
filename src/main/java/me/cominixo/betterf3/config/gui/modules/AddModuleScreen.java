@@ -13,7 +13,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class AddModuleScreen {
 
-
     public static ConfigBuilder getConfigBuilder(ModulesScreen parent) {
 
         ConfigBuilder builder = ConfigBuilder.create()
@@ -21,12 +20,9 @@ public class AddModuleScreen {
 
         builder.setSavingRunnable(ModConfigFile.saveRunnable);
 
-
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         ConfigCategory general = builder.getOrCreateCategory(new TranslationTextComponent("config.betterf3.category.general"));
-
-
 
         DropdownBoxEntry<BaseModule> dropdownEntry = entryBuilder.startDropdownMenu(new TranslationTextComponent("config.betterf3.add_button.module_name"),
                 DropdownMenuBuilder.TopCellElementBuilder.of(new EmptyModule(true),
@@ -43,9 +39,6 @@ public class AddModuleScreen {
 
         general.addEntry(dropdownEntry);
         builder.transparentBackground();
-
-        builder.transparentBackground();
-
         return builder;
     }
 }

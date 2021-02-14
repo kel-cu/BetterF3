@@ -12,7 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 public class SystemModule extends BaseModule{
 
     public SystemModule() {
-
         this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GOLD);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
 
@@ -31,18 +30,15 @@ public class SystemModule extends BaseModule{
         for (DebugLine line : lines) {
             line.inReducedDebug = true;
         }
-
     }
 
     public void update(Minecraft client) {
-
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
         long freeMemory = Runtime.getRuntime().freeMemory();
         long usedMemory = totalMemory - freeMemory;
 
         MainWindow window = client.getMainWindow();
-
 
         String javaVersion = String.format("%s %dbit", System.getProperty("java.version"), client.isJava64bit() ? 64 : 32);
         String memoryUsage = String.format("% 2d%% %03d/%03d MB", usedMemory * 100 / maxMemory, usedMemory / 1024 / 1024, maxMemory / 1024 / 1024);
@@ -63,6 +59,5 @@ public class SystemModule extends BaseModule{
         lines.get(5).setValue(PlatformDescriptors.getGlRenderer());
         lines.get(6).setValue(openGlVersion);
         lines.get(7).setValue(gpuDriverVersion);
-
     }
 }

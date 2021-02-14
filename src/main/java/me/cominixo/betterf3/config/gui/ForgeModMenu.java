@@ -6,7 +6,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 public class ForgeModMenu {
 
 	public static void registerModsPage() {
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (client, parent) -> GeneralOptionsScreen.getConfigBuilder().setParentScreen(parent).build());
+		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY,
+				() -> (mc, screen) -> new ModConfigScreen());
 	}
-
 }

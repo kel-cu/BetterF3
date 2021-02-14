@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.Color;
@@ -42,8 +43,7 @@ public class TargetModule extends BaseModule{
 
     @Override
     public void update(Minecraft client) {
-
-
+        //Entity entity = this.mc.getRenderViewEntity();
         Entity cameraEntity = client.getRenderViewEntity();
 
         if (cameraEntity == null) {
@@ -53,16 +53,14 @@ public class TargetModule extends BaseModule{
         RayTraceResult blockHit = cameraEntity.pick(20.0D, 0.0F, false);
         RayTraceResult fluidHit = cameraEntity.pick(20.0D, 0.0F, true);
 
-        BlockPos blockPos;
-
         if (blockHit.getType() == RayTraceResult.Type.BLOCK) {
 
-            blockPos = new BlockPos(blockHit.getHitVec());
+            BlockPos blockPos = ((BlockRayTraceResult) blockHit).getPos();
             assert client.world != null;
             BlockState blockState = client.world.getBlockState(blockPos);
 
             lines.get(0).setValue(blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
-            lines.get(1).setValue(String.valueOf(Registry.BLOCK.getId(blockState.getBlock())));
+            lines.get(1).setValue(String.valueOf(Registry.BLOCK.getKey(blockState.getBlock())));
 
             List<String> blockStates = new ArrayList<>();
 
@@ -72,7 +70,7 @@ public class TargetModule extends BaseModule{
 
             List<String> blockTags = new ArrayList<>();
 
-            client.getConnection().getTags().getBlockTags().getOwningTags(blockState.getBlock())
+            blockState.getBlock().getTags()
                     .forEach((blockTag -> blockTags.add("#" + blockTag)));
 
             ((DebugLineList)lines.get(3)).setValues(blockTags);
@@ -83,14 +81,13 @@ public class TargetModule extends BaseModule{
             }
         }
 
-
         if (fluidHit.getType() == RayTraceResult.Type.BLOCK) {
-            blockPos = new BlockPos(fluidHit.getHitVec());
+            BlockPos blockPos1 = ((BlockRayTraceResult) fluidHit).getPos();
             assert client.world != null;
-            FluidState fluidState = client.world.getFluidState(blockPos);
+            FluidState fluidState = client.world.getFluidState(blockPos1);
 
-            lines.get(5).setValue(blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
-            lines.get(6).setValue(Registry.FLUID.getId(fluidState.getFluid()));
+            lines.get(5).setValue(blockPos1.getX() + ", " + blockPos1.getY() + ", " + blockPos1.getZ());
+            lines.get(6).setValue(Registry.FLUID.getKey(fluidState.getFluid()));
 
             List<String> fluidStates = new ArrayList<>();
 
@@ -100,7 +97,7 @@ public class TargetModule extends BaseModule{
 
             List<String> fluidTags = new ArrayList<>();
 
-            client.getConnection().getTags().getFluidTags().getOwningTags(fluidState.getFluid())
+            fluidState.getFluid().getTags()
                     .forEach((fluidTag -> fluidTags.add("#" + fluidTag)));
 
             ((DebugLineList)lines.get(8)).setValues(fluidTags);
@@ -111,12 +108,11 @@ public class TargetModule extends BaseModule{
             }
         }
 
-        Entity entity = client.renderViewEntity;
+        Entity entity = client.pointedEntity;
         if (entity != null) {
-            lines.get(10).setValue(Registry.ENTITY_TYPE.getId(entity.getType()));
+            lines.get(10).setValue(Registry.ENTITY_TYPE.getKey(entity.getType()));
         } else {
             lines.get(10).active = false;
         }
-
     }
 }

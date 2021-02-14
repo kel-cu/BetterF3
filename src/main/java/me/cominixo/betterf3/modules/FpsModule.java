@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collections;
 
@@ -22,7 +21,6 @@ public class FpsModule extends BaseModule{
     public Color defaultColorLow = Color.fromTextFormatting(TextFormatting.RED);
 
     public FpsModule() {
-
         lines.add(new DebugLine("fps", "format.betterf3.no_format", true));
         lines.get(0).inReducedDebug = true;
 
@@ -33,7 +31,6 @@ public class FpsModule extends BaseModule{
     }
 
     public void update(Minecraft client) {
-
         int currentFps = Integer.parseInt(client.debug.split(" ")[0].split("/")[0]);
 
         String fpsString = I18n.format("format.betterf3.fps", currentFps,
@@ -43,7 +40,6 @@ public class FpsModule extends BaseModule{
                 client.gameSettings.vsync ? I18n.format("text.betterf3.line.fps.vsync") : "").trim();
 
         Color color;
-
         switch (Utils.getFpsColor(currentFps)) {
             case 0:
                 color = colorHigh;
@@ -59,9 +55,5 @@ public class FpsModule extends BaseModule{
         }
 
         lines.get(0).setValue(Collections.singletonList(Utils.getStyledText(fpsString, color)));
-
-
     }
-
-
 }

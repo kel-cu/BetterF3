@@ -17,5 +17,4 @@ public interface ChunkRenderDispatcherAccessor {
 
     @Accessor
     int getCountFreeBuilders();
-
 }

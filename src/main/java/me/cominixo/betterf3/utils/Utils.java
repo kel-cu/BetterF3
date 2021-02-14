@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class Utils {
 
-
     // Animation stuff
     public static final int START_X_POS = 200;
     public static int xPos = START_X_POS;
@@ -19,7 +18,6 @@ public class Utils {
     public static boolean closingAnimation = false;
 
     public static int getFpsColor(int currentFps) {
-
         if (currentFps >= 60) {
             return 0;
         } else if (currentFps >= 20) {
@@ -30,7 +28,6 @@ public class Utils {
     }
 
     public static TextFormatting getPercentColor(int percent) {
-
         if (percent >= 90) {
             return TextFormatting.RED;
         } else if (percent >= 60) {
@@ -38,11 +35,9 @@ public class Utils {
         } else {
             return TextFormatting.GREEN;
         }
-
     }
 
     public static String getFacingString(Direction facing) {
-
         switch(facing) {
             case NORTH:
                 return new TranslationTextComponent("text.betterf3.line.negative_z").getString();
@@ -72,7 +67,6 @@ public class Utils {
         String[] split = string.split(":");
 
         if (string.contains(":")) {
-
             IFormattableTextComponent name = Utils.getStyledText(split[0], nameColor);
             IFormattableTextComponent value = Utils.getStyledText(String.join(":", Arrays.asList(split).subList(1, split.length)), valueColor);
 
@@ -83,7 +77,6 @@ public class Utils {
     }
 
     public static String propertyToString(Map.Entry<Property<?>, Comparable<?>> propEntry) {
-
         Property<?> key = propEntry.getKey();
         Comparable<?> value = propEntry.getValue();
 
@@ -97,6 +90,4 @@ public class Utils {
 
         return key.getName() + ": " + newValue;
     }
-
-
 }

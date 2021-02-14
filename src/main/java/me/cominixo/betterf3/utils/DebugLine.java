@@ -1,6 +1,9 @@
 package me.cominixo.betterf3.utils;
 
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +29,14 @@ public class DebugLine {
         this.value = "";
     }
 
-
     public DebugLine(String id, String formatString, boolean isCustom) {
-
         this.id = id;
         this.value = "";
         this.format = formatString;
         this.isCustom = isCustom;
-
     }
 
     public ITextComponent toText(Color nameColor, Color valueColor) {
-
         String name = this.getName();
 
         ITextComponent nameStyled = Utils.getStyledText(name, nameColor);
@@ -53,20 +52,16 @@ public class DebugLine {
             this.active = false;
         }
 
-
         return new TranslationTextComponent(format, nameStyled, valueStyled);
     }
 
-
     public ITextComponent toTextCustom(Color nameColor) {
-
         String name = this.getName();
 
         if (value instanceof List) {
             // format properly if value is a List (bad)
             List<Object> values = new ArrayList<>();
             List<?> value = (List<?>) this.value;
-
 
             if (!name.equals("")) {
                 values.add(Utils.getStyledText(name, nameColor));
@@ -77,7 +72,6 @@ public class DebugLine {
         } else {
             return new TranslationTextComponent(format, name, value);
         }
-
     }
 
 
@@ -102,6 +96,4 @@ public class DebugLine {
     public String getId() {
         return id;
     }
-
-
 }

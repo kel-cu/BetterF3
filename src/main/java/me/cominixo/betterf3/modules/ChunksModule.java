@@ -3,11 +3,11 @@ package me.cominixo.betterf3.modules;
 import com.mojang.datafixers.DataFixUtils;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
+import me.cominixo.betterf3.utils.DebugLine;
+import me.cominixo.betterf3.utils.Utils;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ChunkArrayAccessor;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ChunkRenderDispatcherAccessor;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ClientChunkProviderAccessor;
-import me.cominixo.betterf3.utils.DebugLine;
-import me.cominixo.betterf3.utils.Utils;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.WorldRendererAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientChunkProvider;
@@ -17,7 +17,6 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
@@ -31,8 +30,6 @@ public class ChunksModule extends BaseModule{
     public final Color totalColor = Color.fromTextFormatting(TextFormatting.GOLD);
 
     public ChunksModule() {
-
-
         this.defaultNameColor = Color.fromInt(0x00aaff);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
 
@@ -55,13 +52,9 @@ public class ChunksModule extends BaseModule{
         lines.get(3).inReducedDebug = true;
         lines.get(4).inReducedDebug = true;
         lines.get(5).inReducedDebug = true;
-
     }
 
     public void update(Minecraft client) {
-
-
-
         WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.worldRenderer;
         int totalChunks = worldRendererMixin.getViewFrustum().renderChunks.length;
         int renderedChunks = worldRendererMixin.callGetRenderedChunks();
@@ -81,9 +74,8 @@ public class ChunksModule extends BaseModule{
 
         }
 
-
-        World world =
-                DataFixUtils.orElse(Optional.ofNullable(client.getIntegratedServer()).flatMap((integratedServer) -> Optional.ofNullable(integratedServer.getWorld(client.world.getDimensionKey()))), client.world);
+        World world = DataFixUtils.orElse(Optional.ofNullable(client.getIntegratedServer()).flatMap((integratedServer) ->
+                Optional.ofNullable(integratedServer.getWorld(client.world.getDimensionKey()))), client.world);
         LongSet forceLoadedChunks = world instanceof ServerWorld ? ((ServerWorld)world).getForcedChunks() : LongSets.EMPTY_SET;
 
         IntegratedServer integratedServer = client.getIntegratedServer();
@@ -93,7 +85,6 @@ public class ChunksModule extends BaseModule{
         if (serverWorld != null) {
              info = serverWorld.getChunkProvider().func_241101_k_();
         }
-
 
         String chunkCulling = client.renderChunksMany ? TextFormatting.GREEN + I18n.format("text.betterf3.line" +
                 ".enabled") : TextFormatting.RED + I18n.format("text.betterf3.line.disabled");
@@ -123,8 +114,5 @@ public class ChunksModule extends BaseModule{
         if (info != null) {
             lines.get(9).setValue(info.func_234988_a_());
         }
-
-
-        
     }
 }

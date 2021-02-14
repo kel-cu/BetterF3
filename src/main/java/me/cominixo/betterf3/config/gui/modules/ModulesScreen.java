@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import me.cominixo.betterf3.config.ModConfigFile;
 import me.cominixo.betterf3.modules.BaseModule;
 import me.cominixo.betterf3.utils.PositionEnum;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -24,8 +24,8 @@ public class ModulesScreen extends Screen {
         super(new TranslationTextComponent("config.betterf3.title.modules"));
         this.parent = parent;
         this.side = side;
-
     }
+
     @Override
     protected void init() {
         super.init();
@@ -66,9 +66,7 @@ public class ModulesScreen extends Screen {
         }));
 
         updateButtons();
-
         this.children.add(this.modulesListWidget);
-
     }
 
     @Override
@@ -76,7 +74,6 @@ public class ModulesScreen extends Screen {
         this.modulesListWidget.render(matrices, mouseX, mouseY, delta);
         drawCenteredString(matrices, this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         super.render(matrices, mouseX, mouseY, delta);
-
     }
 
     @Override
@@ -95,11 +92,6 @@ public class ModulesScreen extends Screen {
         ModConfigFile.saveRunnable.run();
     }
 
-    public void select(ModuleListWidget.ModuleEntry entry) {
-        this.modulesListWidget.setSelected(entry);
-        updateButtons();
-    }
-
     public void updateButtons() {
         if (this.modulesListWidget.getSelected() != null) {
             editButton.active = true;
@@ -109,5 +101,4 @@ public class ModulesScreen extends Screen {
             deleteButton.active = false;
         }
     }
-
 }

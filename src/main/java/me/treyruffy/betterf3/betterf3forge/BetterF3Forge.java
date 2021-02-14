@@ -4,19 +4,16 @@ import me.cominixo.betterf3.config.ModConfigFile;
 import me.cominixo.betterf3.config.gui.ForgeModMenu;
 import me.cominixo.betterf3.modules.*;
 import me.cominixo.betterf3.utils.PositionEnum;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("betterf3forge")
@@ -32,15 +29,16 @@ public class BetterF3Forge {
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ForgeModMenu::registerModsPage);
+		if (ModList.get().isLoaded("cloth-config"))
+			DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ForgeModMenu::registerModsPage);
+		else
+			LOGGER.info(I18n.format("config.betterf3.need_cloth_config"));
 	}
-
 
 	private void setup(final FMLCommonSetupEvent event) {
 		LOGGER.info("[BetterF3] Loading...");
 
 		// Init all modules and add spaces (default order)
-
 		new MinecraftModule().init();
 		new FpsModule().init();
 		new GraphicsModule().init();

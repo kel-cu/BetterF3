@@ -24,14 +24,11 @@ public class EditModulesScreen {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(Minecraft.getInstance().currentScreen);
 
-
-
         builder.setSavingRunnable(ModConfigFile.saveRunnable);
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         ConfigCategory general = builder.getOrCreateCategory(new TranslationTextComponent("config.betterf3.category.general"));
-
 
         BooleanListEntry moduleEnabled = entryBuilder.startBooleanToggle(new TranslationTextComponent("config.betterf3.module.enable"), module.enabled)
                 .setDefaultValue(true)
@@ -41,7 +38,6 @@ public class EditModulesScreen {
                     module.setEnabled(newValue);
                 })
                 .build();
-
 
         general.addEntry(moduleEnabled);
 
@@ -55,7 +51,6 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.x.tooltip"))
                         .setSaveConsumer(newValue -> coordsModule.colorX = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorX);
             }
             if (coordsModule.colorY != null && coordsModule.defaultColorY != null) {
@@ -65,7 +60,6 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.y.tooltip"))
                         .setSaveConsumer(newValue -> coordsModule.colorY = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorY);
             }
             if (coordsModule.colorZ != null && coordsModule.defaultColorZ != null) {
@@ -75,10 +69,8 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.z.tooltip"))
                         .setSaveConsumer(newValue -> coordsModule.colorZ = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorZ);
             }
-
         }
 
         if (module instanceof FpsModule) {
@@ -91,7 +83,6 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.fps.high.tooltip"))
                         .setSaveConsumer(newValue -> fpsModule.colorHigh = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorHigh);
             }
             if (fpsModule.colorMed != null && fpsModule.defaultColorMed != null) {
@@ -101,7 +92,6 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.fps.medium.tooltip"))
                         .setSaveConsumer(newValue -> fpsModule.colorMed = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorMed);
             }
             if (fpsModule.colorLow != null && fpsModule.defaultColorLow != null) {
@@ -111,12 +101,9 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.color.fps.low.tooltip"))
                         .setSaveConsumer(newValue -> fpsModule.colorLow = Color.fromInt(newValue))
                         .build();
-
                 general.addEntry(colorLow);
             }
-
         }
-
 
         if (module.nameColor != null && module.defaultNameColor != null) {
             ColorEntry nameColor = entryBuilder.startColorField(new TranslationTextComponent("config.betterf3.color" +
@@ -125,7 +112,6 @@ public class EditModulesScreen {
                     .setTooltip(new TranslationTextComponent("config.betterf3.color.name.tooltip"))
                     .setSaveConsumer(newValue -> module.nameColor = Color.fromInt(newValue))
                     .build();
-
             general.addEntry(nameColor);
         }
 
@@ -136,15 +122,11 @@ public class EditModulesScreen {
                     .setTooltip(new TranslationTextComponent("config.betterf3.color.value.tooltip"))
                     .setSaveConsumer(newValue -> module.valueColor = Color.fromInt(newValue))
                     .build();
-
-
             general.addEntry(valueColor);
         }
 
-
         if (module.getLines().size() > 1) {
             for (DebugLine line : module.getLines()) {
-
                 if (line.getId().equals("")) {
                     continue;
                 }
@@ -160,16 +142,11 @@ public class EditModulesScreen {
                         .setTooltip(new TranslationTextComponent("config.betterf3.disable_line.tooltip"))
                         .setSaveConsumer(newValue -> line.enabled = newValue)
                         .build();
-
                 general.addEntry(enabled);
-
             }
         }
 
-
         builder.transparentBackground();
-
         return builder;
-
     }
 }

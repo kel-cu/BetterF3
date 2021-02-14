@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(WorldRenderer.class)
 public interface WorldRendererAccessor {
 
-
     @Accessor
     ViewFrustum getViewFrustum();
 
@@ -29,7 +28,4 @@ public interface WorldRendererAccessor {
 
     @Accessor
     int getCountEntitiesRendered();
-
-
-
 }

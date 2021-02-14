@@ -7,8 +7,6 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.TextFormatting;
 
-import java.awt.*;
-
 public class MinecraftModule extends BaseModule{
 
     public MinecraftModule() {
@@ -24,6 +22,5 @@ public class MinecraftModule extends BaseModule{
 
     public void update(Minecraft client) {
         lines.get(0).setValue(SharedConstants.getVersion().getName() + " (" + client.getVersion() + "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(client.getVersionType()) ? "" : "/" + client.getVersionType()) + ")");
-
     }
 }

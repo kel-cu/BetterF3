@@ -8,8 +8,7 @@ import me.cominixo.betterf3.modules.FpsModule;
 import me.cominixo.betterf3.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.list.AbstractOptionList;
+import net.minecraft.client.gui.widget.list.ExtendedList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.ModuleEntry> {
+public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry> {
 
     ModulesScreen screen;
     List<ModuleEntry> moduleEntries = new ArrayList<>();
@@ -38,7 +37,6 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
         return super.getRowWidth() + 85;
     }
 
-
     @Override
     public ModuleEntry getEntry(int index) {
         return this.moduleEntries.get(index);
@@ -48,16 +46,14 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
         this.moduleEntries.clear();
         this.clearEntries();
 
-        for(BaseModule module : modules) {
+        for (BaseModule module : modules) {
            addModule(module);
         }
-
     }
 
-    public void udpateModules() {
+    public void updateModules() {
         this.clearEntries();
         this.moduleEntries.forEach(this::addEntry);
-
     }
 
     public void addModule(BaseModule module) {
@@ -73,7 +69,8 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
         //BaseModule.modules.remove(index);
     }
 
-    public class ModuleEntry extends AbstractOptionList.Entry<ModuleEntry> {
+    @OnlyIn(Dist.CLIENT)
+    public class ModuleEntry extends ExtendedList.AbstractListEntry<ModuleListWidget.ModuleEntry> {
         private final ModulesScreen screen;
         private final Minecraft client;
         public final BaseModule module;
@@ -85,7 +82,6 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
         }
 
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-
             this.client.fontRenderer.drawString(matrices, this.module.toString(), (float)(x + 32 + 3), (float)(y + 1), 0xffffff);
 
             ITextComponent exampleText;
@@ -106,10 +102,8 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
 
             this.client.fontRenderer.func_243248_b(matrices, exampleText, (float)(x + 40 + 3), (float)(y + 13), 0xffffff);
 
-
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.client.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
-
 
             if (this.client.gameSettings.touchscreen || hovered) {
                 this.client.getTextureManager().bindTexture(new ResourceLocation("textures/gui/server_selection.png"));
@@ -132,20 +126,13 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
                     }
                 }
             }
-
-
-        }
-
-        @Override
-        public List<? extends IGuiEventListener> getEventListeners() {
-            return null;
         }
 
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             double d = mouseX - (double)this.screen.modulesListWidget.getRowLeft();
             double e = mouseY - (double)ModuleListWidget.this.getRowTop(ModuleListWidget.this.getEventListeners().indexOf(this));
-            if (d <= 32.0D) {
 
+            if (d <= 32.0D) {
                 int i = this.screen.modulesListWidget.getEventListeners().indexOf(this);
                 if (d < 16.0D && e < 16.0D && i > 0) {
                     this.swapEntries(i, i - 1);
@@ -157,14 +144,13 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
                     return true;
                 }
             }
-
-            this.screen.select(this);
+            ModuleListWidget.this.setSelected(this);
+            this.screen.updateButtons();
 
             return false;
         }
 
         private void swapEntries(int i, int j) {
-
             ModuleEntry temp = moduleEntries.get(i);
 
             moduleEntries.set(i, moduleEntries.get(j));
@@ -174,10 +160,7 @@ public class ModuleListWidget extends AbstractOptionList<ModuleListWidget.Module
             //ModuleEntry entry = this.screen.modulesListWidget.children().get(j);
             this.screen.modulesListWidget.setSelected(temp);
             this.screen.updateButtons();
-            this.screen.modulesListWidget.udpateModules();
-
+            this.screen.modulesListWidget.updateModules();
         }
-
     }
-
 }

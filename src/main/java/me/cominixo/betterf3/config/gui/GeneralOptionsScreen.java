@@ -19,7 +19,6 @@ public class GeneralOptionsScreen {
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-
         ConfigCategory general = builder.getOrCreateCategory(new TranslationTextComponent("config.betterf3.title.general"));
 
         general.addEntry(entryBuilder.startBooleanToggle(new TranslationTextComponent("config.betterf3.disable"), GeneralOptions.disableMod)
@@ -33,7 +32,6 @@ public class GeneralOptionsScreen {
                 .setTooltip(new TranslationTextComponent("config.betterf3.space_modules.tooltip"))
                 .setSaveConsumer(newValue -> GeneralOptions.spaceEveryModule = newValue)
                 .build());
-
 
         general.addEntry(entryBuilder.startBooleanToggle(new TranslationTextComponent("config.betterf3.shadow_text"), GeneralOptions.shadowText)
                 .setDefaultValue(true)
@@ -61,11 +59,7 @@ public class GeneralOptionsScreen {
                 .setSaveConsumer(newValue -> GeneralOptions.backgroundColor = newValue)
                 .build());
 
-
-
         builder.transparentBackground();
-
         return builder;
-
     }
 }

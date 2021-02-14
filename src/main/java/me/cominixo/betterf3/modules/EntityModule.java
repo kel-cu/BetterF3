@@ -11,7 +11,6 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 
@@ -23,16 +22,11 @@ public class EntityModule extends BaseModule {
     public final Color totalColor = Color.fromTextFormatting(TextFormatting.GOLD);
 
     public EntityModule() {
-
-
-
         this.defaultNameColor = Color.fromTextFormatting(TextFormatting.RED);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
-
-
 
         lines.add(new DebugLine("particles"));
         lines.add(new DebugLine("entities", "format.betterf3.total", true));
@@ -43,14 +37,11 @@ public class EntityModule extends BaseModule {
             lines.add(new DebugLine(name));
         }
 
-
         lines.get(0).inReducedDebug = true;
         lines.get(1).inReducedDebug = true;
 
-
     }
     public void update(Minecraft client) {
-
         WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.worldRenderer;
 
         List<ITextComponent> entityValues = Arrays.asList(Utils.getStyledText(I18n.format("text.betterf3.line.rendered"),
@@ -74,14 +65,9 @@ public class EntityModule extends BaseModule {
                 }
             }
         }
-
         // Particles
         lines.get(0).setValue(client.particles.getStatistics());
         // Entities
         lines.get(1).setValue(entityValues);
-
-
-
     }
-
 }

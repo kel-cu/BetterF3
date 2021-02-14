@@ -35,9 +35,7 @@ public abstract class DebugMixin {
 
     @Shadow protected abstract List<String> getDebugInfoRight();
 
-
     public List<ITextComponent> getNewLeftText() {
-
         List<ITextComponent> list = new ArrayList<>();
 
         for (BaseModule module : BaseModule.modules) {
@@ -55,13 +53,10 @@ public abstract class DebugMixin {
                 list.add(new StringTextComponent(""));
             }
         }
-
         return list;
-
     }
 
     public List<ITextComponent> getNewRightText() {
-
         List<ITextComponent> list = new ArrayList<>();
 
         for (BaseModule module : BaseModule.modulesRight) {
@@ -79,24 +74,17 @@ public abstract class DebugMixin {
                 list.add(new StringTextComponent(""));
             }
         }
-
         return list;
-
     }
 
     @Inject(method = "renderDebugInfoRight", at = @At("HEAD"), cancellable = true)
     public void renderRightText(MatrixStack matrixStack, CallbackInfo ci) {
-
-
-
-
         if (GeneralOptions.disableMod) {
             return;
         }
         List<ITextComponent> list = getNewRightText();
 
         for (int i = 0; i < list.size(); i++) {
-
             if (!Strings.isNullOrEmpty(list.get(i).getString())) {
                 int height = 9;
                 int width = this.fontRenderer.getStringWidth(list.get(i).getString());
@@ -114,29 +102,20 @@ public abstract class DebugMixin {
                 } else {
                     this.fontRenderer.func_243248_b(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
                 }
-
-
             }
         }
         ci.cancel();
-
     }
-
 
     @Inject(method = "renderDebugInfoLeft", at = @At("HEAD"), cancellable = true)
     public void renderLeftText(MatrixStack matrixStack, CallbackInfo ci) {
-
-
-
         if (GeneralOptions.disableMod) {
             return;
         }
         List<ITextComponent> list = getNewLeftText();
 
         for (int i = 0; i < list.size(); i++) {
-
             if (!Strings.isNullOrEmpty(list.get(i).getString())) {
-
                 int height = 9;
                 int width = this.fontRenderer.getStringWidth(list.get(i).getString());
                 int y = 2 + height * i;
@@ -154,25 +133,18 @@ public abstract class DebugMixin {
                 } else {
                     this.fontRenderer.func_243248_b(matrixStack, list.get(i), xPosLeft, (float) y, 0xE0E0E0);
                 }
-
-
             }
         }
-
         ci.cancel();
     }
 
     @Inject(method = "render", at = @At("HEAD"))
     public void renderAnimation(MatrixStack matrices, CallbackInfo ci) {
-
-
-
         if (!GeneralOptions.enableAnimations) {
             return;
         }
         long time = Util.milliTime();
         if (time - lastAnimationUpdate >= 10 && (xPos != 0 || closingAnimation)) {
-
 
             int i = ((START_X_POS/2 + xPos) / 10)-9;
 
@@ -186,7 +158,6 @@ public abstract class DebugMixin {
             }
 
             if (closingAnimation) {
-
                 xPos += i;
                 xPos *= GeneralOptions.animationSpeed;
 
@@ -194,11 +165,8 @@ public abstract class DebugMixin {
                     this.mc.gameSettings.showDebugInfo = false;
                     closingAnimation = false;
                 }
-
             }
-
             lastAnimationUpdate = time;
         }
     }
-
 }

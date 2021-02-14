@@ -2,7 +2,6 @@ package me.treyruffy.betterf3.betterf3forge.mixin;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.overlay.DebugOverlayGui;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import org.objectweb.asm.Opcodes;
@@ -20,5 +19,4 @@ public abstract class ForgeIngameGuiMixin {
 		new DebugOverlayGui(Minecraft.getInstance()).render(mStack);
 		ci.cancel();
 	}
-
 }

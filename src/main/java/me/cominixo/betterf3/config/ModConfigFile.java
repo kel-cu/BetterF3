@@ -10,7 +10,6 @@ import me.cominixo.betterf3.utils.DebugLine;
 import net.minecraft.util.text.Color;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,24 +29,16 @@ public class ModConfigFile {
         general.set("background_color", GeneralOptions.backgroundColor);
 
         List<Config> configsLeft = new ArrayList<>();
-
             for (BaseModule module : BaseModule.modules) {
-
                 Config moduleConfig = saveModule(module);
-
                 configsLeft.add(moduleConfig);
-
             }
-
 
             List<Config> configsRight = new ArrayList<>();
 
             for (BaseModule module : BaseModule.modulesRight) {
-
                 Config moduleConfig = saveModule(module);
-
                 configsRight.add(moduleConfig);
-
             }
 
         config.set("modules_left", configsLeft);
@@ -60,12 +51,8 @@ public class ModConfigFile {
 
 
     public static void load() {
-
         File file = new File("config/betterf3.toml");
-
         try {
-            if (!file.exists()) file.createNewFile();
-
             FileConfig config = FileConfig.builder(file).concurrent().autosave().build();
 
             config.load();
@@ -74,13 +61,10 @@ public class ModConfigFile {
 
             // Support for old configs
             if (allModulesConfig != null) {
-
                 for (BaseModule module : BaseModule.allModules) {
-
                     String moduleName = module.id;
 
                     Config moduleConfig = allModulesConfig.getOrElse(moduleName, () -> null);
-
 
                     if (moduleConfig == null) {
                         continue;
@@ -95,7 +79,6 @@ public class ModConfigFile {
                             if (line != null) {
                                 line.enabled = e.getValue();
                             }
-
                         }
                     }
 
@@ -107,27 +90,22 @@ public class ModConfigFile {
                     }
 
                     if (module instanceof CoordsModule) {
-
                         CoordsModule coordsModule = (CoordsModule) module;
 
                         coordsModule.colorX = Color.fromInt(moduleConfig.getOrElse("color_x", coordsModule.defaultColorX.getColor()));
                         coordsModule.colorY = Color.fromInt(moduleConfig.getOrElse("color_y", coordsModule.defaultColorY.getColor()));
                         coordsModule.colorZ = Color.fromInt(moduleConfig.getOrElse("color_z", coordsModule.defaultColorZ.getColor()));
                     }
-
                     module.enabled = moduleConfig.getOrElse("enabled", true);
-
                 }
             } else {
                 // New config
                 List<BaseModule> modulesLeft = new ArrayList<>();
                 List<BaseModule> modulesRight = new ArrayList<>();
 
-
                 List<Config> modulesLeftConfig = config.getOrElse("modules_left", () -> null);
 
                 if (modulesLeftConfig != null) {
-
                     for (Config moduleConfig : modulesLeftConfig) {
                         String moduleName = moduleConfig.getOrElse("name", null);
 
@@ -140,7 +118,6 @@ public class ModConfigFile {
                         modulesLeft.add(baseModule);
                     }
                 }
-
                 if (!modulesLeft.isEmpty()) {
                     BaseModule.modules = modulesLeft;
                 }
@@ -161,7 +138,6 @@ public class ModConfigFile {
                         modulesRight.add(baseModule);
                     }
                 }
-
                 if (!modulesRight.isEmpty()) {
                     BaseModule.modulesRight = modulesRight;
                 }
@@ -171,7 +147,6 @@ public class ModConfigFile {
             Config general = config.getOrElse("general", () -> null);
 
             if (general != null) {
-
                 if (allModulesConfig != null) {
                     List<BaseModule> modulesLeft = new ArrayList<>();
                     List<BaseModule> modulesRight = new ArrayList<>();
@@ -198,7 +173,6 @@ public class ModConfigFile {
                         BaseModule.modulesRight = modulesRight;
                     }
                 }
-
                 GeneralOptions.disableMod = general.getOrElse("disable_mod", false);
                 GeneralOptions.spaceEveryModule = general.getOrElse("space_modules", false);
                 GeneralOptions.shadowText = general.getOrElse("shadow_text", true);
@@ -206,9 +180,7 @@ public class ModConfigFile {
                 GeneralOptions.animationSpeed = general.getOrElse("animationSpeed", 1.0);
                 GeneralOptions.backgroundColor = general.getOrElse("background_color", 0x6F505050);
             }
-
             config.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,7 +219,6 @@ public class ModConfigFile {
         }
 
         if (baseModule instanceof CoordsModule) {
-
             CoordsModule coordsModule = (CoordsModule) baseModule;
 
             coordsModule.colorX = Color.fromInt(moduleConfig.getOrElse("color_x", coordsModule.defaultColorX.getColor()));
@@ -256,7 +227,6 @@ public class ModConfigFile {
         }
 
         if (baseModule instanceof FpsModule) {
-
             FpsModule fpsModule = (FpsModule) baseModule;
 
             fpsModule.colorHigh = Color.fromInt(moduleConfig.getOrElse("color_high", fpsModule.defaultColorHigh.getColor()));
@@ -272,11 +242,8 @@ public class ModConfigFile {
         Config moduleConfig = Config.inMemory();
         Config lines = Config.inMemory();
 
-
         for (DebugLine line : module.getLines()) {
-
             String lineId = line.getId();
-
             lines.set(lineId, line.enabled);
         }
 
@@ -320,5 +287,4 @@ public class ModConfigFile {
 
         return moduleConfig;
     }
-
 }

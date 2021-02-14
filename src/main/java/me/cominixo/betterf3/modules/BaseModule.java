@@ -7,14 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class BaseModule {
-
 
     public Color nameColor;
     public Color valueColor;
@@ -31,10 +29,7 @@ public abstract class BaseModule {
 
     public String id = this.getClass().getSimpleName().replace("Module", "").toLowerCase();
 
-
-    public BaseModule() {
-
-    }
+    public BaseModule(){}
 
     public BaseModule(boolean invisible) {
         if (!invisible) {
@@ -56,58 +51,44 @@ public abstract class BaseModule {
                 break;
         }
         allModules.add(this);
-
     }
     public void init() {
         modules.add(this);
         allModules.add(this);
     }
 
-
     public List<DebugLine> getLines() {
         return lines;
     }
 
-
     public List<ITextComponent> getLinesFormatted(boolean reducedDebug) {
-
         List<ITextComponent> linesString = new ArrayList<>();
 
-
         for (DebugLine line : lines) {
-
             if (reducedDebug && !line.inReducedDebug) {
                 continue;
             }
             if (!line.active || !line.enabled) {
                 continue;
             }
-
             if (line instanceof DebugLineList) {
                 DebugLineList lineList = (DebugLineList) line;
                 linesString.addAll(lineList.toTexts(nameColor, valueColor));
                 continue;
             }
 
-
             if (!line.isCustom) {
                 linesString.add(line.toText(nameColor, valueColor));
             } else {
                 linesString.add(line.toTextCustom(nameColor));
             }
-
         }
-
         return linesString;
-
     }
 
     public DebugLine getLine(String id) {
-
         Optional<DebugLine> lineOptional = lines.stream().filter(line -> line.getId().equals(id)).findFirst();
-
         return lineOptional.orElse(null);
-
     }
 
     public static BaseModule getModule(String string) {
@@ -122,11 +103,9 @@ public abstract class BaseModule {
         return I18n.format("text.betterf3.module." + id);
     }
 
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     public abstract void update(Minecraft client);
-
 }

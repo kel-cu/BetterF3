@@ -14,20 +14,17 @@ public class SoundModule extends BaseModule {
     public final Color totalColor = Color.fromTextFormatting(TextFormatting.DARK_AQUA);
 
     public SoundModule() {
-
         this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GOLD);
         this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
 
-
         lines.add(new DebugLine("sounds", "format.betterf3.total", true));
         lines.add(new DebugLine("ambient_sounds", "format.betterf3.total", true));
     }
 
     public void update(Minecraft client) {
-
         // String.format("Sounds: %d/%d + %d/%d", this.staticHandler.getActiveSoundSourceCount(), this.staticHandler
         // .getMaxSoundSources(), this.streamingHandler.getActiveSoundSourceCount(), this.streamingHandler
         // .getMaxSoundSources())
@@ -48,7 +45,5 @@ public class SoundModule extends BaseModule {
         lines.get(1).setValue(Arrays.asList(Utils.getStyledText(playing, valueColor), Utils.getStyledText(maximum,
                 totalColor), Utils.getStyledText(streamingHandlerList[0], valueColor),
                 Utils.getStyledText(streamingHandlerList[1], totalColor)));
-
     }
-
 }

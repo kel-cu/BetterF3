@@ -13,7 +13,6 @@ import java.util.Arrays;
 
 public class CoordsModule extends BaseModule{
 
-
     public Color colorX;
     public Color colorY;
     public Color colorZ;
@@ -23,14 +22,12 @@ public class CoordsModule extends BaseModule{
     public Color defaultColorZ = Color.fromTextFormatting(TextFormatting.AQUA);
 
     public CoordsModule() {
-
         this.defaultNameColor = Color.fromTextFormatting(TextFormatting.RED);
 
         this.nameColor = defaultNameColor;
         this.colorX = defaultColorX;
         this.colorY = defaultColorY;
         this.colorZ = defaultColorZ;
-
 
         lines.add(new DebugLine("player_coords", "format.betterf3.coords", true));
         lines.add(new DebugLine("block_coords", "format.betterf3.coords", true));
@@ -42,13 +39,10 @@ public class CoordsModule extends BaseModule{
     }
 
     public void update(Minecraft client) {
-
         Entity cameraEntity = client.getRenderViewEntity();
-
         ITextComponent xyz = Utils.getStyledText("X", colorX).append(Utils.getStyledText("Y", colorY)).append(Utils.getStyledText("Z", colorZ));
 
         if (cameraEntity != null) {
-
 
             String cameraX = String.format("%.3f", cameraEntity.getPosX());
             String cameraY = String.format("%.5f", cameraEntity.getPosY());
@@ -69,9 +63,5 @@ public class CoordsModule extends BaseModule{
             lines.get(3).setValue(Arrays.asList(Utils.getStyledText(blockPos.getX() >> 4, colorX),
                     Utils.getStyledText(blockPos.getY() >> 4, colorY), Utils.getStyledText(blockPos.getZ() >> 4, colorZ)));
         }
-
-
-
     }
-
 }

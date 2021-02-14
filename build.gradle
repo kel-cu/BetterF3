@@ -20,7 +20,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'me.treyruffy.betterf3'
-version = '1.0-SNAPSHOT'
+version = '1.0.0'
 archivesBaseName = 'betterf3forge'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -31,12 +31,11 @@ repositories {
 }
 
 dependencies {
-	shadow (fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.1.3"))
+	compile (fg.deobf("me.shedaniel.cloth:cloth-config:4.10.9:forge"))
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-	compile 'com.electronwill.night-config:json:3.6.3'
-	compile 'com.electronwill.night-config:yaml:3.6.3'
+	compile 'com.electronwill.night-config:toml:3.6.3'
 }
 
 minecraft {
@@ -163,7 +162,6 @@ shadowJar {
 	archiveName = "BetterF3-${project.version}-forge-1.16.4.jar"
 	dependencies {
 		include(dependency('com.electronwill.night-config:.*:.*'))
-		include(dependency('me.shedaniel.cloth-config-forge:.*:.*'))
 	}
 }
 
