@@ -40,7 +40,7 @@ public class CoordsModule extends BaseModule{
 
     public void update(Minecraft client) {
         Entity cameraEntity = client.getRenderViewEntity();
-        ITextComponent xyz = Utils.getStyledText("X", colorX).append(Utils.getStyledText("Y", colorY)).append(Utils.getStyledText("Z", colorZ));
+        ITextComponent xyz = Utils.getStyledText("X", colorX).appendSibling(Utils.getStyledText("Y", colorY)).appendSibling(Utils.getStyledText("Z", colorZ));
 
         if (cameraEntity != null) {
 

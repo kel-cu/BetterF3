@@ -70,7 +70,7 @@ public class Utils {
             IFormattableTextComponent name = Utils.getStyledText(split[0], nameColor);
             IFormattableTextComponent value = Utils.getStyledText(String.join(":", Arrays.asList(split).subList(1, split.length)), valueColor);
 
-            return name.append(new StringTextComponent(":")).append(value);
+            return name.appendSibling(new StringTextComponent(":")).appendSibling(value);
         } else {
             return new StringTextComponent(string);
         }

@@ -98,9 +98,9 @@ public abstract class DebugMixin {
                         GeneralOptions.backgroundColor);
 
                 if (GeneralOptions.shadowText) {
-                    this.fontRenderer.func_243246_a(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
+                    this.fontRenderer.drawTextWithShadow(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
                 } else {
-                    this.fontRenderer.func_243248_b(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
+                    this.fontRenderer.drawText(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
                 }
             }
         }
@@ -129,9 +129,9 @@ public abstract class DebugMixin {
                         GeneralOptions.backgroundColor);
 
                 if (GeneralOptions.shadowText) {
-                    this.fontRenderer.func_243246_a(matrixStack, list.get(i), xPosLeft, (float)y, 0xE0E0E0);
+                    this.fontRenderer.drawTextWithShadow(matrixStack, list.get(i), xPosLeft, (float)y, 0xE0E0E0);
                 } else {
-                    this.fontRenderer.func_243248_b(matrixStack, list.get(i), xPosLeft, (float) y, 0xE0E0E0);
+                    this.fontRenderer.drawText(matrixStack, list.get(i), xPosLeft, (float) y, 0xE0E0E0);
                 }
             }
         }

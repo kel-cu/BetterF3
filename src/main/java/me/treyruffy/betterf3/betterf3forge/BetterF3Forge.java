@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.FMLNetworkConstants;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +38,8 @@ public class BetterF3Forge {
 		else
 			LOGGER.info(I18n.format("config.betterf3.need_cloth_config"));
 
-		//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+		// Make sure the mod being absent on the other network side does not cause the client to display the server
+		// as incompatible
 		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 	}
 

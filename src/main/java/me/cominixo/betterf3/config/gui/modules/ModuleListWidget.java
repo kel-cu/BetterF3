@@ -88,19 +88,19 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
 
             if (this.module instanceof CoordsModule) {
                 CoordsModule coordsModule = (CoordsModule) this.module;
-                exampleText =  Utils.getStyledText("X", coordsModule.colorX).append(Utils.getStyledText("Y", coordsModule.colorY)).append(Utils.getStyledText("Z", coordsModule.colorZ)).append(Utils.getStyledText(": ", coordsModule.nameColor))
-                                .append(Utils.getStyledText("100 ", coordsModule.colorX).append(Utils.getStyledText("200 ", coordsModule.colorY)).append(Utils.getStyledText("300", coordsModule.colorZ)));
+                exampleText =  Utils.getStyledText("X", coordsModule.colorX).appendSibling(Utils.getStyledText("Y", coordsModule.colorY)).appendSibling(Utils.getStyledText("Z", coordsModule.colorZ)).appendSibling(Utils.getStyledText(": ", coordsModule.nameColor))
+                                .appendSibling(Utils.getStyledText("100 ", coordsModule.colorX).appendSibling(Utils.getStyledText("200 ", coordsModule.colorY)).appendSibling(Utils.getStyledText("300", coordsModule.colorZ)));
 
             } else if (this.module instanceof FpsModule) {
                 FpsModule fpsModule = (FpsModule) this.module;
-                exampleText =  Utils.getStyledText("60 fps  ", fpsModule.colorHigh).append(Utils.getStyledText("40 fps  ", fpsModule.colorMed)).append(Utils.getStyledText("10 fps", fpsModule.colorLow));
+                exampleText =  Utils.getStyledText("60 fps  ", fpsModule.colorHigh).appendSibling(Utils.getStyledText("40 fps  ", fpsModule.colorMed)).appendSibling(Utils.getStyledText("10 fps", fpsModule.colorLow));
             } else if (this.module.nameColor != null && this.module.valueColor != null){
-                exampleText = Utils.getStyledText("Name: ", this.module.nameColor).append(Utils.getStyledText("Value", this.module.valueColor));
+                exampleText = Utils.getStyledText("Name: ", this.module.nameColor).appendSibling(Utils.getStyledText("Value", this.module.valueColor));
             } else {
                 exampleText = new StringTextComponent("");
             }
 
-            this.client.fontRenderer.func_243248_b(matrices, exampleText, (float)(x + 40 + 3), (float)(y + 13), 0xffffff);
+            this.client.fontRenderer.drawText(matrices, exampleText, (float)(x + 40 + 3), (float)(y + 13), 0xffffff);
 
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.client.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
