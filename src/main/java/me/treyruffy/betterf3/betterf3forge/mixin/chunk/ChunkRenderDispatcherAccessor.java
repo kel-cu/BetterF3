@@ -10,11 +10,11 @@ import java.util.Queue;
 public interface ChunkRenderDispatcherAccessor {
 
     @Accessor
-    int getCountRenderTasks();
+    int getToBatchCount();
 
     @Accessor
-    Queue<Runnable> getUploadTasks();
+    Queue<Runnable> getToUpload();
 
     @Accessor
-    int getCountFreeBuilders();
+    int getFreeBufferCount();
 }

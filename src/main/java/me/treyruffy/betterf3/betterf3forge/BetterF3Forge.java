@@ -4,18 +4,17 @@ import me.cominixo.betterf3.config.ModConfigFile;
 import me.cominixo.betterf3.config.gui.ForgeModMenu;
 import me.cominixo.betterf3.modules.*;
 import me.cominixo.betterf3.utils.PositionEnum;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,20 +26,23 @@ public class BetterF3Forge {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public BetterF3Forge() {
+		LOGGER.info("[BetterF3] Starting...");
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 
-		if (ModList.get().isLoaded("cloth-config"))
-			DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ForgeModMenu::registerModsPage);
-		else
-			LOGGER.info(I18n.format("config.betterf3.need_cloth_config"));
-
 		// Make sure the mod being absent on the other network side does not cause the client to display the server
 		// as incompatible
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+		ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
+				() -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+
+		if (ModList.get().isLoaded("cloth_config"))
+			DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ForgeModMenu::registerModsPage);
+		else
+			LOGGER.info(I18n.get("config.betterf3.need_cloth_config"));
+
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

@@ -1,9 +1,9 @@
 package me.cominixo.betterf3.utils;
 
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +36,14 @@ public class DebugLine {
         this.isCustom = isCustom;
     }
 
-    public ITextComponent toText(Color nameColor, Color valueColor) {
+    public Component toText(TextColor nameColor, TextColor valueColor) {
         String name = this.getName();
 
-        ITextComponent nameStyled = Utils.getStyledText(name, nameColor);
-        ITextComponent valueStyled;
+        Component nameStyled = Utils.getStyledText(name, nameColor);
+        Component valueStyled;
 
-        if (this.value instanceof ITextComponent) {
-            valueStyled = (ITextComponent) this.value;
+        if (this.value instanceof Component) {
+            valueStyled = (Component) this.value;
         } else {
             valueStyled = Utils.getStyledText(this.value, valueColor);
         }
@@ -52,10 +52,10 @@ public class DebugLine {
             this.active = false;
         }
 
-        return new TranslationTextComponent(format, nameStyled, valueStyled);
+        return new TranslatableComponent(format, nameStyled, valueStyled);
     }
 
-    public ITextComponent toTextCustom(Color nameColor) {
+    public Component toTextCustom(TextColor nameColor) {
         String name = this.getName();
 
         if (value instanceof List) {
@@ -68,9 +68,9 @@ public class DebugLine {
             }
 
             values.addAll(value);
-            return new TranslationTextComponent(format, values.toArray()).modifyStyle(style -> style.setColor(nameColor));
+            return new TranslatableComponent(format, values.toArray()).withStyle(style -> style.withColor(nameColor));
         } else {
-            return new TranslationTextComponent(format, name, value);
+            return new TranslatableComponent(format, name, value);
         }
     }
 
@@ -89,8 +89,8 @@ public class DebugLine {
             this.format = "%s%s";
             return "";
         }
-        LanguageMap language = LanguageMap.getInstance();
-        return language.func_230503_a_("text.betterf3.line." + id);
+        Language language = Language.getInstance();
+        return language.getOrDefault("text.betterf3.line." + id);
     }
 
     public String getId() {

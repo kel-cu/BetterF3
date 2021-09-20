@@ -2,13 +2,13 @@ package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,8 +17,8 @@ import java.util.List;
 public class ServerModule extends BaseModule{
 
     public ServerModule() {
-        this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GRAY);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
+        this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.GRAY);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -33,29 +33,29 @@ public class ServerModule extends BaseModule{
     }
 
     public void update(Minecraft client) {
-        IntegratedServer integratedServer = client.getIntegratedServer();
+        IntegratedServer integratedServer = client.getSingleplayerServer();
 
         String serverString = "";
         if (integratedServer != null) {
-            serverString = I18n.format("text.betterf3.line.integrated_server");
+            serverString = I18n.get("text.betterf3.line.integrated_server");
         } else if (client.player != null){
             serverString = client.player.getServerBrand();
         }
 
         if (client.getConnection() != null) {
-            NetworkManager clientConnection = client.getConnection().getNetworkManager();
-            float packetsSent = clientConnection.getPacketsSent();
-            float packetsReceived = clientConnection.getPacketsReceived();
+            Connection clientConnection = client.getConnection().getConnection();
+            float packetsSent = clientConnection.getAverageSentPackets();
+            float packetsReceived = clientConnection.getAverageReceivedPackets();
 
             lines.get(1).setValue(Math.round(packetsSent));
             lines.get(2).setValue(Math.round(packetsReceived));
         }
         String tickString = "";
         if (integratedServer != null) {
-            tickString = Integer.toString(Math.round(integratedServer.getTickTime()));
+            tickString = Integer.toString(Math.round(integratedServer.getAverageTickTime()));
         }
 
-        List<IFormattableTextComponent> serverStringList = new LinkedList<>(Arrays.asList(Utils.getStyledText(serverString, nameColor), Utils.getStyledText(tickString, nameColor)));
+        List<MutableComponent> serverStringList = new LinkedList<>(Arrays.asList(Utils.getStyledText(serverString, nameColor), Utils.getStyledText(tickString, nameColor)));
 
         if (tickString.isEmpty()) {
             lines.get(0).setFormat("format.betterf3.no_format");

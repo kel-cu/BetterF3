@@ -1,7 +1,7 @@
 package me.cominixo.betterf3.utils;
 
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,8 +20,8 @@ public class DebugLineList extends DebugLine {
         this.active = true;
     }
 
-    public Collection<ITextComponent> toTexts(Color nameColor, Color valueColor) {
-        List<ITextComponent> texts = new ArrayList<>();
+    public Collection<Component> toTexts(TextColor nameColor, TextColor valueColor) {
+        List<Component> texts = new ArrayList<>();
 
         for (String v : values) {
             texts.add(Utils.getFormattedFromString(v, nameColor, valueColor));

@@ -1,9 +1,10 @@
 package me.cominixo.betterf3.utils;
 
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.*;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Arrays;
@@ -27,52 +28,47 @@ public class Utils {
         }
     }
 
-    public static TextFormatting getPercentColor(int percent) {
+    public static ChatFormatting getPercentColor(int percent) {
         if (percent >= 90) {
-            return TextFormatting.RED;
+            return ChatFormatting.RED;
         } else if (percent >= 60) {
-            return TextFormatting.YELLOW;
+            return ChatFormatting.YELLOW;
         } else {
-            return TextFormatting.GREEN;
+            return ChatFormatting.GREEN;
         }
     }
 
     public static String getFacingString(Direction facing) {
-        switch(facing) {
-            case NORTH:
-                return new TranslationTextComponent("text.betterf3.line.negative_z").getString();
-            case SOUTH:
-                return new TranslationTextComponent("text.betterf3.line.positive_z").getString();
-            case WEST:
-                return new TranslationTextComponent("text.betterf3.line.negative_x").getString();
-            case EAST:
-                return new TranslationTextComponent("text.betterf3.line.positive_x").getString();
-            default:
-                return "";
-        }
+        return switch (facing) {
+            case NORTH -> new TranslatableComponent("text.betterf3.line.negative_z").getString();
+            case SOUTH -> new TranslatableComponent("text.betterf3.line.positive_z").getString();
+            case WEST -> new TranslatableComponent("text.betterf3.line.negative_x").getString();
+            case EAST -> new TranslatableComponent("text.betterf3.line.positive_x").getString();
+            default -> "";
+        };
     }
 
-    public static IFormattableTextComponent getStyledText(Object string, Color color) {
+    public static MutableComponent getStyledText(Object string, TextColor color) {
         if (string == null) {
             string = "";
         }
-        return new StringTextComponent(string.toString()).modifyStyle((style) -> style.setColor(color));
+        return new TextComponent(string.toString()).withStyle((style) -> style.withColor(color));
     }
 
     public static String enumToString(Enum<?> e) {
         return WordUtils.capitalizeFully(e.toString().replace("_", " "));
     }
 
-    public static ITextComponent getFormattedFromString(String string, Color nameColor, Color valueColor) {
+    public static Component getFormattedFromString(String string, TextColor nameColor, TextColor valueColor) {
         String[] split = string.split(":");
 
         if (string.contains(":")) {
-            IFormattableTextComponent name = Utils.getStyledText(split[0], nameColor);
-            IFormattableTextComponent value = Utils.getStyledText(String.join(":", Arrays.asList(split).subList(1, split.length)), valueColor);
+            MutableComponent name = Utils.getStyledText(split[0], nameColor);
+            MutableComponent value = Utils.getStyledText(String.join(":", Arrays.asList(split).subList(1, split.length)), valueColor);
 
-            return name.appendSibling(new StringTextComponent(":")).appendSibling(value);
+            return name.append(new TextComponent(":")).append(value);
         } else {
-            return new StringTextComponent(string);
+            return new TextComponent(string);
         }
     }
 
@@ -80,12 +76,12 @@ public class Utils {
         Property<?> key = propEntry.getKey();
         Comparable<?> value = propEntry.getValue();
 
-        String newValue = Util.getValueName(key, value);
+        String newValue = Util.getPropertyName(key, value);
 
         if (Boolean.TRUE.equals(value)) {
-            newValue = TextFormatting.GREEN + newValue;
+            newValue = ChatFormatting.GREEN + newValue;
         } else if (Boolean.FALSE.equals(value)) {
-            newValue = TextFormatting.RED + newValue;
+            newValue = ChatFormatting.RED + newValue;
         }
 
         return key.getName() + ": " + newValue;

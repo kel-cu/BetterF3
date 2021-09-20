@@ -57,9 +57,9 @@
     "config.betterf3.modules.delete_button": "Usuń moduł",
     "config.betterf3.modules.done_button": "Gotowe",
     "config.betterf3.add_button.module_name": "Nazwa modułu",
-    "config.bettef3.order_left_button": "Lewe moduły",
-    "config.bettef3.order_right_button": "Prawe moduły",
-    "config.bettef3.general_settings": "Ustawienia ogólne",
+    "config.betterf3.order_left_button": "Lewe moduły",
+    "config.betterf3.order_right_button": "Prawe moduły",
+    "config.betterf3.general_settings": "Ustawienia ogólne",
 
     "text.betterf3.module.minecraft": "Klient Minecraft",
     "text.betterf3.module.fps": "Klatki na sekundę",

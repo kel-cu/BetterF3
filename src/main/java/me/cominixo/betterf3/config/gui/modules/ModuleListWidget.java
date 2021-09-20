@@ -1,25 +1,27 @@
 package me.cominixo.betterf3.config.gui.modules;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.cominixo.betterf3.modules.BaseModule;
 import me.cominixo.betterf3.modules.CoordsModule;
 import me.cominixo.betterf3.modules.FpsModule;
 import me.cominixo.betterf3.utils.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.widget.list.ExtendedList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry> {
+public class ModuleListWidget extends ObjectSelectionList<ModuleListWidget.ModuleEntry> {
 
     ModulesScreen screen;
     List<ModuleEntry> moduleEntries = new ArrayList<>();
@@ -38,6 +40,7 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
     }
 
     @Override
+    @Nonnull
     public ModuleEntry getEntry(int index) {
         return this.moduleEntries.get(index);
     }
@@ -70,7 +73,7 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class ModuleEntry extends ExtendedList.AbstractListEntry<ModuleListWidget.ModuleEntry> {
+    public class ModuleEntry extends ObjectSelectionList.Entry<ModuleListWidget.ModuleEntry> {
         private final ModulesScreen screen;
         private final Minecraft client;
         public final BaseModule module;
@@ -81,48 +84,55 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
             this.client = Minecraft.getInstance();
         }
 
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            this.client.fontRenderer.drawString(matrices, this.module.toString(), (float)(x + 32 + 3), (float)(y + 1), 0xffffff);
+        public void render(@Nonnull PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX,
+                           int mouseY, boolean hovered, float tickDelta) {
+            this.client.font.draw(matrices, this.module.toString(), (float)(x + 32 + 3), (float)(y + 1),
+                    0xffffff);
 
-            ITextComponent exampleText;
+            Component exampleText;
 
-            if (this.module instanceof CoordsModule) {
-                CoordsModule coordsModule = (CoordsModule) this.module;
-                exampleText =  Utils.getStyledText("X", coordsModule.colorX).appendSibling(Utils.getStyledText("Y", coordsModule.colorY)).appendSibling(Utils.getStyledText("Z", coordsModule.colorZ)).appendSibling(Utils.getStyledText(": ", coordsModule.nameColor))
-                                .appendSibling(Utils.getStyledText("100 ", coordsModule.colorX).appendSibling(Utils.getStyledText("200 ", coordsModule.colorY)).appendSibling(Utils.getStyledText("300", coordsModule.colorZ)));
+            if (this.module instanceof CoordsModule coordsModule) {
+                exampleText =  Utils.getStyledText("X", coordsModule.colorX).append(Utils.getStyledText("Y",
+                                coordsModule.colorY)).append(Utils.getStyledText("Z", coordsModule.colorZ)).append(Utils.getStyledText(": ", coordsModule.nameColor))
+                                .append(Utils.getStyledText("100 ", coordsModule.colorX).append(Utils.getStyledText("200 "
+                                        , coordsModule.colorY)).append(Utils.getStyledText("300", coordsModule.colorZ)));
 
-            } else if (this.module instanceof FpsModule) {
-                FpsModule fpsModule = (FpsModule) this.module;
-                exampleText =  Utils.getStyledText("60 fps  ", fpsModule.colorHigh).appendSibling(Utils.getStyledText("40 fps  ", fpsModule.colorMed)).appendSibling(Utils.getStyledText("10 fps", fpsModule.colorLow));
+            } else if (this.module instanceof FpsModule fpsModule) {
+                exampleText =  Utils.getStyledText("60 fps  ", fpsModule.colorHigh).append(Utils.getStyledText("40 fps  ",
+                        fpsModule.colorMed)).append(Utils.getStyledText("10 fps", fpsModule.colorLow));
             } else if (this.module.nameColor != null && this.module.valueColor != null){
-                exampleText = Utils.getStyledText("Name: ", this.module.nameColor).appendSibling(Utils.getStyledText("Value", this.module.valueColor));
+                exampleText = Utils.getStyledText("Name: ", this.module.nameColor).append(Utils.getStyledText("Value",
+                        this.module.valueColor));
             } else {
-                exampleText = new StringTextComponent("");
+                exampleText = new TextComponent("");
             }
 
-            this.client.fontRenderer.drawText(matrices, exampleText, (float)(x + 40 + 3), (float)(y + 13), 0xffffff);
+            this.client.font.draw(matrices, exampleText, (float)(x + 40 + 3), (float)(y + 13), 0xffffff);
 
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.client.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            this.client.getTextureManager().bindForSetup(GuiComponent.GUI_ICONS_LOCATION);
 
-            if (this.client.gameSettings.touchscreen || hovered) {
-                this.client.getTextureManager().bindTexture(new ResourceLocation("textures/gui/server_selection.png"));
+            if (this.client.options.touchscreen || hovered) {
+                RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/server_selection.png"));
+                GuiComponent.fill(matrices, x, y, x + 32, y + 32, -1601138544);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 int v = mouseX - x;
                 int w = mouseY - y;
 
                 if (index > 0) {
                     if (v < 16 && w < 16) {
-                        AbstractGui.blit(matrices, x, y, 96.0F, 32.0F, 32, 32, 256, 256);
+                        GuiComponent.blit(matrices, x, y, 96.0F, 32.0F, 32, 32, 256, 256);
                     } else {
-                        AbstractGui.blit(matrices, x, y, 96.0F, 0.0F, 32, 32, 256, 256);
+                        GuiComponent.blit(matrices, x, y, 96.0F, 0.0F, 32, 32, 256, 256);
                     }
                 }
 
                 if (index < moduleEntries.size() - 1) {
                     if (v < 16 && w > 16) {
-                        AbstractGui.blit(matrices, x, y, 64.0F, 32.0F, 32, 32, 256, 256);
+                        GuiComponent.blit(matrices, x, y, 64.0F, 32.0F, 32, 32, 256, 256);
                     } else {
-                        AbstractGui.blit(matrices, x, y, 64.0F, 0.0F, 32, 32, 256, 256);
+                        GuiComponent.blit(matrices, x, y, 64.0F, 0.0F, 32, 32, 256, 256);
                     }
                 }
             }
@@ -130,10 +140,10 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
 
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             double d = mouseX - (double)this.screen.modulesListWidget.getRowLeft();
-            double e = mouseY - (double)ModuleListWidget.this.getRowTop(ModuleListWidget.this.getEventListeners().indexOf(this));
+            double e = mouseY - (double)ModuleListWidget.this.getRowTop(ModuleListWidget.this.children().indexOf(this));
 
             if (d <= 32.0D) {
-                int i = this.screen.modulesListWidget.getEventListeners().indexOf(this);
+                int i = this.screen.modulesListWidget.children().indexOf(this);
                 if (d < 16.0D && e < 16.0D && i > 0) {
                     this.swapEntries(i, i - 1);
                     return true;
@@ -161,6 +171,11 @@ public class ModuleListWidget extends ExtendedList<ModuleListWidget.ModuleEntry>
             this.screen.modulesListWidget.setSelected(temp);
             this.screen.updateButtons();
             this.screen.modulesListWidget.updateModules();
+        }
+
+        @Override
+        public Component getNarration() {
+            return new TextComponent(this.module.toString());
         }
     }
 }

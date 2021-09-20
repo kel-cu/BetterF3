@@ -4,9 +4,9 @@ import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.DebugLineList;
 import me.cominixo.betterf3.utils.PositionEnum;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.Optional;
 
 public abstract class BaseModule {
 
-    public Color nameColor;
-    public Color valueColor;
+    public TextColor nameColor;
+    public TextColor valueColor;
 
-    public Color defaultNameColor;
-    public Color defaultValueColor;
+    public TextColor defaultNameColor;
+    public TextColor defaultValueColor;
 
     public boolean enabled = true;
 
@@ -39,16 +39,12 @@ public abstract class BaseModule {
 
     public void init(PositionEnum positionEnum) {
         switch (positionEnum) {
-            case RIGHT:
-                modulesRight.add(this);
-                break;
-            case LEFT:
-                modules.add(this);
-                break;
-            case BOTH:
+            case RIGHT -> modulesRight.add(this);
+            case LEFT -> modules.add(this);
+            case BOTH -> {
                 modulesRight.add(this);
                 modules.add(this);
-                break;
+            }
         }
         allModules.add(this);
     }
@@ -61,8 +57,8 @@ public abstract class BaseModule {
         return lines;
     }
 
-    public List<ITextComponent> getLinesFormatted(boolean reducedDebug) {
-        List<ITextComponent> linesString = new ArrayList<>();
+    public List<Component> getLinesFormatted(boolean reducedDebug) {
+        List<Component> linesString = new ArrayList<>();
 
         for (DebugLine line : lines) {
             if (reducedDebug && !line.inReducedDebug) {
@@ -71,8 +67,7 @@ public abstract class BaseModule {
             if (!line.active || !line.enabled) {
                 continue;
             }
-            if (line instanceof DebugLineList) {
-                DebugLineList lineList = (DebugLineList) line;
+            if (line instanceof DebugLineList lineList) {
                 linesString.addAll(lineList.toTexts(nameColor, valueColor));
                 continue;
             }
@@ -100,7 +95,7 @@ public abstract class BaseModule {
     }
 
     public String toString() {
-        return I18n.format("text.betterf3.module." + id);
+        return I18n.get("text.betterf3.module." + id);
     }
 
     public void setEnabled(boolean enabled) {

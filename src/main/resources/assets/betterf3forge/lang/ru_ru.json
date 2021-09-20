@@ -57,9 +57,9 @@
   "config.betterf3.modules.delete_button": "Удалить",
   "config.betterf3.modules.done_button": "Готово",
   "config.betterf3.add_button.module_name": "Название модуля",
-  "config.bettef3.order_left_button": "Модули слева",
-  "config.bettef3.order_right_button": "Модули справа",
-  "config.bettef3.general_settings": "Основные настройки",
+  "config.betterf3.order_left_button": "Модули слева",
+  "config.betterf3.order_right_button": "Модули справа",
+  "config.betterf3.general_settings": "Основные настройки",
 
   "text.betterf3.module.minecraft": "Minecraft",
   "text.betterf3.module.fps": "FPS",

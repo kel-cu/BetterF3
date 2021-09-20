@@ -1,17 +1,19 @@
 package me.treyruffy.betterf3.betterf3forge.mixin;
 
 import com.google.common.base.Strings;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.cominixo.betterf3.config.GeneralOptions;
 import me.cominixo.betterf3.modules.BaseModule;
 import me.cominixo.betterf3.modules.MiscLeftModule;
 import me.cominixo.betterf3.modules.MiscRightModule;
+import me.cominixo.betterf3.utils.Utils;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.overlay.DebugOverlayGui;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,116 +24,113 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.cominixo.betterf3.utils.Utils.*;
-import static net.minecraft.client.gui.AbstractGui.fill;
-
-@Mixin(DebugOverlayGui.class)
+@Mixin(DebugScreenOverlay.class)
 public abstract class DebugMixin {
 
-    @Shadow @Final private Minecraft mc;
-    @Shadow @Final private FontRenderer fontRenderer;
+    @Shadow @Final private Minecraft minecraft;
+    @Shadow @Final private Font font;
 
-    @Shadow protected abstract List<String> getDebugInfoLeft();
+    @Shadow protected abstract List<String> getGameInformation();
 
-    @Shadow protected abstract List<String> getDebugInfoRight();
+    @Shadow protected abstract List<String> getSystemInformation();
 
-    public List<ITextComponent> getNewLeftText() {
-        List<ITextComponent> list = new ArrayList<>();
+    public List<Component> getNewLeftText() {
+        List<Component> list = new ArrayList<>();
 
         for (BaseModule module : BaseModule.modules) {
             if (!module.enabled) {
                 continue;
             }
             if (module instanceof MiscLeftModule) {
-              ((MiscLeftModule) module).update(getDebugInfoLeft());
+              ((MiscLeftModule) module).update(getGameInformation());
             } else {
-                module.update(mc);
+                module.update(minecraft);
             }
 
-            list.addAll(module.getLinesFormatted(mc.isReducedDebug()));
+            list.addAll(module.getLinesFormatted(minecraft.showOnlyReducedInfo()));
             if (GeneralOptions.spaceEveryModule) {
-                list.add(new StringTextComponent(""));
+                list.add(new TextComponent(""));
             }
         }
         return list;
     }
 
-    public List<ITextComponent> getNewRightText() {
-        List<ITextComponent> list = new ArrayList<>();
+    public List<Component> getNewRightText() {
+        List<Component> list = new ArrayList<>();
 
         for (BaseModule module : BaseModule.modulesRight) {
             if (!module.enabled) {
                 continue;
             }
             if (module instanceof MiscRightModule) {
-                ((MiscRightModule) module).update(getDebugInfoRight());
+                ((MiscRightModule) module).update(getSystemInformation());
             } else {
-                module.update(mc);
+                module.update(minecraft);
             }
 
-            list.addAll(module.getLinesFormatted(mc.isReducedDebug()));
+            list.addAll(module.getLinesFormatted(minecraft.showOnlyReducedInfo()));
             if (GeneralOptions.spaceEveryModule) {
-                list.add(new StringTextComponent(""));
+                list.add(new TextComponent(""));
             }
         }
         return list;
     }
 
-    @Inject(method = "renderDebugInfoRight", at = @At("HEAD"), cancellable = true)
-    public void renderRightText(MatrixStack matrixStack, CallbackInfo ci) {
+    @Inject(method = "drawGameInformation", at = @At("HEAD"), cancellable = true)
+    public void drawGameInformation(PoseStack matrixStack, CallbackInfo ci) {
         if (GeneralOptions.disableMod) {
             return;
         }
-        List<ITextComponent> list = getNewRightText();
+        List<Component> list = getNewRightText();
 
         for (int i = 0; i < list.size(); i++) {
             if (!Strings.isNullOrEmpty(list.get(i).getString())) {
                 int height = 9;
-                int width = this.fontRenderer.getStringWidth(list.get(i).getString());
-                int windowWidth = this.mc.getMainWindow().getScaledWidth() - 2 - width;
+                int width = this.font.width(list.get(i).getString());
+                int windowWidth = this.minecraft.getWindow().getGuiScaledWidth() - 2 - width;
                 if (GeneralOptions.enableAnimations) {
-                    windowWidth += xPos;
+                    windowWidth += Utils.xPos;
                 }
                 int y = 2 + height * i;
 
-                fill(matrixStack, windowWidth - 1, y - 1, windowWidth + width + 1, y + height - 1,
+                GuiComponent.fill(matrixStack, windowWidth - 1, y - 1, windowWidth + width + 1, y + height - 1,
                         GeneralOptions.backgroundColor);
 
                 if (GeneralOptions.shadowText) {
-                    this.fontRenderer.drawTextWithShadow(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
+                    this.font.drawShadow(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
                 } else {
-                    this.fontRenderer.drawText(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
+                    this.font.draw(matrixStack, list.get(i), windowWidth, (float)y, 0xE0E0E0);
                 }
             }
         }
         ci.cancel();
     }
 
-    @Inject(method = "renderDebugInfoLeft", at = @At("HEAD"), cancellable = true)
-    public void renderLeftText(MatrixStack matrixStack, CallbackInfo ci) {
+    @Inject(method = "drawSystemInformation", at = @At("HEAD"), cancellable = true)
+    public void drawSystemInformation(PoseStack matrixStack, CallbackInfo ci) {
         if (GeneralOptions.disableMod) {
             return;
         }
-        List<ITextComponent> list = getNewLeftText();
+        List<Component> list = getNewLeftText();
 
         for (int i = 0; i < list.size(); i++) {
             if (!Strings.isNullOrEmpty(list.get(i).getString())) {
                 int height = 9;
-                int width = this.fontRenderer.getStringWidth(list.get(i).getString());
+                int width = this.font.width(list.get(i).getString());
                 int y = 2 + height * i;
                 int xPosLeft = 2;
 
                 if (GeneralOptions.enableAnimations) {
-                    xPosLeft -= xPos;
+                    xPosLeft -= Utils.xPos;
                 }
 
-                fill(matrixStack, 1 + xPosLeft, y - 1, width + 3 + xPosLeft, y + height - 1,
+                GuiComponent.fill(matrixStack, 1 + xPosLeft, y - 1, width + 3 + xPosLeft, y + height - 1,
                         GeneralOptions.backgroundColor);
 
                 if (GeneralOptions.shadowText) {
-                    this.fontRenderer.drawTextWithShadow(matrixStack, list.get(i), xPosLeft, (float)y, 0xE0E0E0);
+                    this.font.drawShadow(matrixStack, list.get(i), xPosLeft, (float)y, 0xE0E0E0);
                 } else {
-                    this.fontRenderer.drawText(matrixStack, list.get(i), xPosLeft, (float) y, 0xE0E0E0);
+                    this.font.draw(matrixStack, list.get(i), xPosLeft, (float) y, 0xE0E0E0);
                 }
             }
         }
@@ -139,34 +138,34 @@ public abstract class DebugMixin {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    public void renderAnimation(MatrixStack matrices, CallbackInfo ci) {
+    public void renderAnimation(PoseStack matrices, CallbackInfo ci) {
         if (!GeneralOptions.enableAnimations) {
             return;
         }
-        long time = Util.milliTime();
-        if (time - lastAnimationUpdate >= 10 && (xPos != 0 || closingAnimation)) {
+        long time = Util.getMillis();
+        if (time - Utils.lastAnimationUpdate >= 10 && (Utils.xPos != 0 || Utils.closingAnimation)) {
 
-            int i = ((START_X_POS/2 + xPos) / 10)-9;
+            int i = ((Utils.START_X_POS/2 + Utils.xPos) / 10)-9;
 
-            if (xPos != 0 && !closingAnimation) {
-                xPos /= GeneralOptions.animationSpeed;
-                xPos -= i;
+            if (Utils.xPos != 0 && !Utils.closingAnimation) {
+                Utils.xPos /= GeneralOptions.animationSpeed;
+                Utils.xPos -= i;
             }
 
             if (i == 0) {
                 i = 1;
             }
 
-            if (closingAnimation) {
-                xPos += i;
-                xPos *= GeneralOptions.animationSpeed;
+            if (Utils.closingAnimation) {
+                Utils.xPos += i;
+                Utils.xPos *= GeneralOptions.animationSpeed;
 
-                if (xPos >= 300) {
-                    this.mc.gameSettings.showDebugInfo = false;
-                    closingAnimation = false;
+                if (Utils.xPos >= 300) {
+                    this.minecraft.options.renderDebug = false;
+                    Utils.closingAnimation = false;
                 }
             }
-            lastAnimationUpdate = time;
+            Utils.lastAnimationUpdate = time;
         }
     }
 }

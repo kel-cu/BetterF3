@@ -57,9 +57,9 @@
   "config.betterf3.modules.delete_button": "删除模块",
   "config.betterf3.modules.done_button": "完成",
   "config.betterf3.add_button.module_name": "模块名",
-  "config.bettef3.order_left_button": "左侧模块",
-  "config.bettef3.order_right_button": "右侧模块",
-  "config.bettef3.general_settings": "常规设置",
+  "config.betterf3.order_left_button": "左侧模块",
+  "config.betterf3.order_right_button": "右侧模块",
+  "config.betterf3.general_settings": "常规设置",
 
   "text.betterf3.module.minecraft": "Minecraft",
   "text.betterf3.module.fps": "帧数",

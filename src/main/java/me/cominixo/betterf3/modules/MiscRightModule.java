@@ -1,9 +1,9 @@
 package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLineList;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,11 +12,11 @@ import java.util.List;
 public class MiscRightModule extends BaseModule{
 
     private static final List<String> VANILLA_DEBUG_RIGHT = Arrays.asList("Java:", "Mem:", "Allocated:", "CPU:", "Display:");
-    private final int rightSideSize = 0;
+    private int rightSideSize = 0;
 
     public MiscRightModule() {
-        this.defaultNameColor = Color.fromInt(0xfdfd96);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
+        this.defaultNameColor = TextColor.fromRgb(0xfdfd96);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -48,8 +48,8 @@ public class MiscRightModule extends BaseModule{
                     continue;
                 }
 
-                if (s.startsWith(TextFormatting.UNDERLINE + "Targeted Block") || s.startsWith(TextFormatting.UNDERLINE +
-                        "Targeted Fluid") || s.startsWith(TextFormatting.UNDERLINE + "Targeted Entity")) {
+                if (s.startsWith(ChatFormatting.UNDERLINE + "Targeted Block") || s.startsWith(ChatFormatting.UNDERLINE +
+                        "Targeted Fluid") || s.startsWith(ChatFormatting.UNDERLINE + "Targeted Entity")) {
                     inTargeted = true;
                     lines.remove(s);
                     continue;
@@ -77,6 +77,6 @@ public class MiscRightModule extends BaseModule{
             }
 
         }
-        ((DebugLineList)this.lines.get(0)).setValues(lines);
+        ((DebugLineList) this.lines.get(0)).setValues(lines);
     }
 }

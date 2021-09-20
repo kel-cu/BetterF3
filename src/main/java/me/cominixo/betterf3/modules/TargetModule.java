@@ -3,16 +3,16 @@ package me.cominixo.betterf3.modules;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.DebugLineList;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.block.BlockState;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.List;
 public class TargetModule extends BaseModule{
 
     public TargetModule() {
-        this.defaultNameColor = Color.fromInt(0x00aaff);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
+        this.defaultNameColor = TextColor.fromRgb(0x00aaff);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -44,20 +44,20 @@ public class TargetModule extends BaseModule{
     @Override
     public void update(Minecraft client) {
         //Entity entity = this.mc.getRenderViewEntity();
-        Entity cameraEntity = client.getRenderViewEntity();
+        Entity cameraEntity = client.getCameraEntity();
 
         if (cameraEntity == null) {
             return;
         }
 
-        RayTraceResult blockHit = cameraEntity.pick(20.0D, 0.0F, false);
-        RayTraceResult fluidHit = cameraEntity.pick(20.0D, 0.0F, true);
+        HitResult blockHit = cameraEntity.pick(20.0D, 0.0F, false);
+        HitResult fluidHit = cameraEntity.pick(20.0D, 0.0F, true);
 
-        if (blockHit.getType() == RayTraceResult.Type.BLOCK) {
+        if (blockHit.getType() == HitResult.Type.BLOCK) {
 
-            BlockPos blockPos = ((BlockRayTraceResult) blockHit).getPos();
-            assert client.world != null;
-            BlockState blockState = client.world.getBlockState(blockPos);
+            BlockPos blockPos = ((BlockHitResult) blockHit).getBlockPos();
+            assert client.level != null;
+            BlockState blockState = client.level.getBlockState(blockPos);
 
             lines.get(0).setValue(blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
             lines.get(1).setValue(String.valueOf(Registry.BLOCK.getKey(blockState.getBlock())));
@@ -81,13 +81,13 @@ public class TargetModule extends BaseModule{
             }
         }
 
-        if (fluidHit.getType() == RayTraceResult.Type.BLOCK) {
-            BlockPos blockPos1 = ((BlockRayTraceResult) fluidHit).getPos();
-            assert client.world != null;
-            FluidState fluidState = client.world.getFluidState(blockPos1);
+        if (fluidHit.getType() == HitResult.Type.BLOCK) {
+            BlockPos blockPos1 = ((BlockHitResult) fluidHit).getBlockPos();
+            assert client.level != null;
+            FluidState fluidState = client.level.getFluidState(blockPos1);
 
             lines.get(5).setValue(blockPos1.getX() + ", " + blockPos1.getY() + ", " + blockPos1.getZ());
-            lines.get(6).setValue(Registry.FLUID.getKey(fluidState.getFluid()));
+            lines.get(6).setValue(Registry.FLUID.getKey(fluidState.getType()));
 
             List<String> fluidStates = new ArrayList<>();
 
@@ -97,7 +97,7 @@ public class TargetModule extends BaseModule{
 
             List<String> fluidTags = new ArrayList<>();
 
-            fluidState.getFluid().getTags()
+            fluidState.getType().getTags()
                     .forEach((fluidTag -> fluidTags.add("#" + fluidTag)));
 
             ((DebugLineList)lines.get(8)).setValues(fluidTags);
@@ -108,7 +108,7 @@ public class TargetModule extends BaseModule{
             }
         }
 
-        Entity entity = client.pointedEntity;
+        Entity entity = client.crosshairPickEntity;
         if (entity != null) {
             lines.get(10).setValue(Registry.ENTITY_TYPE.getKey(entity.getType()));
         } else {

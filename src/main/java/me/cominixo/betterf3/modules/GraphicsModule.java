@@ -2,19 +2,19 @@ package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.WorldRendererAccessor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.CloudOption;
-import net.minecraft.client.shader.ShaderGroup;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
 import org.apache.commons.lang3.StringUtils;
 
 public class GraphicsModule extends BaseModule {
 
     public GraphicsModule() {
-        this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GOLD);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
+        this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.GOLD);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -27,26 +27,26 @@ public class GraphicsModule extends BaseModule {
     }
 
     public void update(Minecraft client) {
-        WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.worldRenderer;
+        WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.levelRenderer;
 
-        String cloudString = client.gameSettings.cloudOption == CloudOption.OFF ? I18n.format("text" +
+        String cloudString = client.options.renderClouds == CloudStatus.OFF ? I18n.get("text" +
                 ".betterf3.line.off")
-                             : (client.gameSettings.cloudOption == CloudOption.FAST ? I18n.format("text.betterf3.line" +
-                ".fast") : I18n.format("text.betterf3.line.fancy"));
+                             : (client.options.renderClouds == CloudStatus.FAST ? I18n.get("text.betterf3.line" +
+                ".fast") : I18n.get("text.betterf3.line.fancy"));
 
         // Render Distance
-        lines.get(0).setValue(worldRendererMixin.getRenderDistanceChunks());
+        lines.get(0).setValue(worldRendererMixin.getLastViewDistance());
         // Graphics
-        lines.get(1).setValue(StringUtils.capitalize(client.gameSettings.graphicFanciness.toString()));
+        lines.get(1).setValue(StringUtils.capitalize(client.options.graphicsMode.toString()));
         // Clouds
         lines.get(2).setValue(cloudString);
         // Biome Blend Radius
-        lines.get(3).setValue(client.gameSettings.biomeBlendRadius);
+        lines.get(3).setValue(client.options.biomeBlendRadius);
 
         // Shader
-        ShaderGroup shaderEffect = client.gameRenderer.getShaderGroup();
+        PostChain shaderEffect = client.gameRenderer.currentEffect();
         if (shaderEffect != null) {
-            lines.get(4).setValue(shaderEffect.getShaderGroupName());
+            lines.get(4).setValue(shaderEffect.getName());
         } else {
             lines.get(4).active = false;
         }

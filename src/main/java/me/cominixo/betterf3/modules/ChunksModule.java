@@ -9,17 +9,17 @@ import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ChunkArrayAccessor;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ChunkRenderDispatcherAccessor;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.ClientChunkProviderAccessor;
 import me.treyruffy.betterf3.betterf3forge.mixin.chunk.WorldRendererAccessor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientChunkProvider;
+import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.spawner.WorldEntitySpawner;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.NaturalSpawner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +27,11 @@ import java.util.Optional;
 
 public class ChunksModule extends BaseModule{
 
-    public final Color totalColor = Color.fromTextFormatting(TextFormatting.GOLD);
+    public final TextColor totalColor = TextColor.fromLegacyFormat(ChatFormatting.GOLD);
 
     public ChunksModule() {
-        this.defaultNameColor = Color.fromInt(0x00aaff);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.YELLOW);
+        this.defaultNameColor = TextColor.fromRgb(0x00aaff);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -55,17 +55,17 @@ public class ChunksModule extends BaseModule{
     }
 
     public void update(Minecraft client) {
-        WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.worldRenderer;
-        int totalChunks = worldRendererMixin.getViewFrustum().renderChunks.length;
-        int renderedChunks = worldRendererMixin.callGetRenderedChunks();
+        WorldRendererAccessor worldRendererMixin = (WorldRendererAccessor) client.levelRenderer;
+        int totalChunks = worldRendererMixin.getViewArea().chunks.length;
+        int renderedChunks = worldRendererMixin.callCountRenderedChunks();
 
-        ChunkRenderDispatcher chunkBuilder = worldRendererMixin.getRenderDispatcher();
+        ChunkRenderDispatcher chunkBuilder = worldRendererMixin.getChunkRenderDispatcher();
         ChunkRenderDispatcherAccessor chunkBuilderAccessor = (ChunkRenderDispatcherAccessor) chunkBuilder;
 
-        if (client.world != null) {
-            ClientChunkProvider clientChunkManager = client.world.getChunkProvider();
+        if (client.level != null) {
+            ClientChunkCache clientChunkManager = client.level.getChunkSource();
             ClientChunkProviderAccessor clientChunkManagerMixin = (ClientChunkProviderAccessor) clientChunkManager;
-            ChunkArrayAccessor clientChunkMapMixin = (ChunkArrayAccessor) (Object) clientChunkManagerMixin.getArray();
+            ChunkArrayAccessor clientChunkMapMixin = (ChunkArrayAccessor) (Object) clientChunkManagerMixin.getStorage();
 
             // Client Chunk Cache
             lines.get(5).setValue(clientChunkMapMixin.getChunks().length());
@@ -74,23 +74,25 @@ public class ChunksModule extends BaseModule{
 
         }
 
-        World world = DataFixUtils.orElse(Optional.ofNullable(client.getIntegratedServer()).flatMap((integratedServer) ->
-                Optional.ofNullable(integratedServer.getWorld(client.world.getDimensionKey()))), client.world);
-        LongSet forceLoadedChunks = world instanceof ServerWorld ? ((ServerWorld)world).getForcedChunks() : LongSets.EMPTY_SET;
+        Level world =
+                DataFixUtils.orElse(Optional.ofNullable(client.getSingleplayerServer()).flatMap((integratedServer) ->
+                Optional.ofNullable(integratedServer.getLevel(client.level.dimension()))), client.level);
+        LongSet forceLoadedChunks = world instanceof ServerLevel ? ((ServerLevel)world).getForcedChunks() : LongSets.EMPTY_SET;
 
-        IntegratedServer integratedServer = client.getIntegratedServer();
-        ServerWorld serverWorld = integratedServer != null ? integratedServer.getWorld(client.world.getDimensionKey()) : null;
+        IntegratedServer integratedServer = client.getSingleplayerServer();
+        ServerLevel serverWorld = integratedServer != null ? integratedServer.getLevel(client.level.dimension()) :
+                null;
 
-        WorldEntitySpawner.EntityDensityManager info = null;
+        NaturalSpawner.SpawnState info = null;
         if (serverWorld != null) {
-             info = serverWorld.getChunkProvider().func_241101_k_();
+             info = serverWorld.getChunkSource().getLastSpawnState();
         }
 
-        String chunkCulling = client.renderChunksMany ? TextFormatting.GREEN + I18n.format("text.betterf3.line" +
-                ".enabled") : TextFormatting.RED + I18n.format("text.betterf3.line.disabled");
+        String chunkCulling = client.noRender ? ChatFormatting.GREEN + I18n.get("text.betterf3.line" +
+                ".enabled") : ChatFormatting.RED + I18n.get("text.betterf3.line.disabled");
 
-        List<ITextComponent> chunkValues = Arrays.asList(Utils.getStyledText(I18n.format("text.betterf3.line.rendered"),
-                valueColor), Utils.getStyledText(I18n.format("text.betterf3.line.total"), totalColor),
+        List<Component> chunkValues = Arrays.asList(Utils.getStyledText(I18n.get("text.betterf3.line.rendered"),
+                valueColor), Utils.getStyledText(I18n.get("text.betterf3.line.total"), totalColor),
                 Utils.getStyledText(Integer.toString(renderedChunks), valueColor), Utils.getStyledText(Integer.toString(totalChunks), totalColor));
 
         // Chunk Sections
@@ -98,21 +100,21 @@ public class ChunksModule extends BaseModule{
         // Chunk Culling
         lines.get(1).setValue(chunkCulling);
         // Pending Chunks
-        lines.get(2).setValue(chunkBuilderAccessor.getCountRenderTasks());
+        lines.get(2).setValue(chunkBuilderAccessor.getToBatchCount());
         // Pending Uploads to GPU
-        lines.get(3).setValue(chunkBuilderAccessor.getUploadTasks().size());
+        lines.get(3).setValue(chunkBuilderAccessor.getToUpload().size());
         // Available Buffers
-        lines.get(4).setValue(chunkBuilderAccessor.getCountFreeBuilders());
+        lines.get(4).setValue(chunkBuilderAccessor.getFreeBufferCount());
 
         // Loaded Chunks (Server)
         if (serverWorld != null) {
-            lines.get(7).setValue(serverWorld.getChunkProvider().getLoadedChunkCount());
+            lines.get(7).setValue(serverWorld.getChunkSource().getLoadedChunksCount());
         }
         // Forceloaded Chunks
         lines.get(8).setValue(forceLoadedChunks.size());
         // Spawn Chunks
         if (info != null) {
-            lines.get(9).setValue(info.func_234988_a_());
+            lines.get(9).setValue(info.getSpawnableChunkCount());
         }
     }
 }

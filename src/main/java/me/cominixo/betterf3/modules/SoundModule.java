@@ -2,20 +2,20 @@ package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Arrays;
 
 public class SoundModule extends BaseModule {
 
-    public final Color totalColor = Color.fromTextFormatting(TextFormatting.DARK_AQUA);
+    public final TextColor totalColor = TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA);
 
     public SoundModule() {
-        this.defaultNameColor = Color.fromTextFormatting(TextFormatting.GOLD);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
+        this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.GOLD);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;
@@ -28,13 +28,13 @@ public class SoundModule extends BaseModule {
         // String.format("Sounds: %d/%d + %d/%d", this.staticHandler.getActiveSoundSourceCount(), this.staticHandler
         // .getMaxSoundSources(), this.streamingHandler.getActiveSoundSourceCount(), this.streamingHandler
         // .getMaxSoundSources())
-        String debugString = client.getSoundHandler().getDebugString();
+        String debugString = client.getSoundManager().getDebugString();
         String[] staticHandlerList =
                 debugString.substring(8).substring(0, debugString.indexOf(" ")).replace(" +", "").split("/");
         String[] streamingHandlerList = debugString.substring(debugString.indexOf("+") + 1).replace(" ", "").split("/");
 
-        String playing = I18n.format("text.betterf3.line.playing");
-        String maximum = I18n.format("text.betterf3.line.maximum");
+        String playing = I18n.get("text.betterf3.line.playing");
+        String maximum = I18n.get("text.betterf3.line.maximum");
 
         // Sound
         lines.get(0).setValue(Arrays.asList(Utils.getStyledText(playing, valueColor), Utils.getStyledText(maximum,

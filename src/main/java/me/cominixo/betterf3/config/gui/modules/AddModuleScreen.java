@@ -3,13 +3,13 @@ package me.cominixo.betterf3.config.gui.modules;
 import me.cominixo.betterf3.config.ModConfigFile;
 import me.cominixo.betterf3.modules.BaseModule;
 import me.cominixo.betterf3.modules.EmptyModule;
-import me.shedaniel.clothconfig2.forge.api.ConfigBuilder;
-import me.shedaniel.clothconfig2.forge.api.ConfigCategory;
-import me.shedaniel.clothconfig2.forge.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.forge.gui.entries.DropdownBoxEntry;
-import me.shedaniel.clothconfig2.forge.impl.builders.DropdownMenuBuilder;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class AddModuleScreen {
 
@@ -22,12 +22,12 @@ public class AddModuleScreen {
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory general = builder.getOrCreateCategory(new TranslationTextComponent("config.betterf3.category.general"));
+        ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("config.betterf3.category.general"));
 
-        DropdownBoxEntry<BaseModule> dropdownEntry = entryBuilder.startDropdownMenu(new TranslationTextComponent("config.betterf3.add_button.module_name"),
+        DropdownBoxEntry<BaseModule> dropdownEntry = entryBuilder.startDropdownMenu(new TranslatableComponent("config.betterf3.add_button.module_name"),
                 DropdownMenuBuilder.TopCellElementBuilder.of(new EmptyModule(true),
                         BaseModule::getModule,
-                        (object) -> new StringTextComponent(object.toString()))).setSelections(BaseModule.allModules)
+                        (object) -> new TextComponent(object.toString()))).setSelections(BaseModule.allModules)
                 .setSaveConsumer((BaseModule newValue) -> {
                     try {
                         parent.modulesListWidget.addModule(newValue.getClass().newInstance());

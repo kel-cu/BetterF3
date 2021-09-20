@@ -2,27 +2,27 @@ package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
 
 import java.util.Arrays;
 
 public class CoordsModule extends BaseModule{
 
-    public Color colorX;
-    public Color colorY;
-    public Color colorZ;
+    public TextColor colorX;
+    public TextColor colorY;
+    public TextColor colorZ;
 
-    public Color defaultColorX = Color.fromTextFormatting(TextFormatting.RED);
-    public Color defaultColorY = Color.fromTextFormatting(TextFormatting.GREEN);
-    public Color defaultColorZ = Color.fromTextFormatting(TextFormatting.AQUA);
+    public TextColor defaultColorX = TextColor.fromLegacyFormat(ChatFormatting.RED);
+    public TextColor defaultColorY = TextColor.fromLegacyFormat(ChatFormatting.GREEN);
+    public TextColor defaultColorZ = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
     public CoordsModule() {
-        this.defaultNameColor = Color.fromTextFormatting(TextFormatting.RED);
+        this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.RED);
 
         this.nameColor = defaultNameColor;
         this.colorX = defaultColorX;
@@ -39,20 +39,22 @@ public class CoordsModule extends BaseModule{
     }
 
     public void update(Minecraft client) {
-        Entity cameraEntity = client.getRenderViewEntity();
-        ITextComponent xyz = Utils.getStyledText("X", colorX).appendSibling(Utils.getStyledText("Y", colorY)).appendSibling(Utils.getStyledText("Z", colorZ));
+        Entity cameraEntity = client.getCameraEntity();
+        Component xyz =
+                Utils.getStyledText("X", colorX).append(Utils.getStyledText("Y", colorY)).append(Utils.getStyledText("Z",
+                        colorZ));
 
         if (cameraEntity != null) {
 
-            String cameraX = String.format("%.3f", cameraEntity.getPosX());
-            String cameraY = String.format("%.5f", cameraEntity.getPosY());
-            String cameraZ = String.format("%.3f", cameraEntity.getPosZ());
+            String cameraX = String.format("%.3f", cameraEntity.getX());
+            String cameraY = String.format("%.5f", cameraEntity.getY());
+            String cameraZ = String.format("%.3f", cameraEntity.getZ());
 
             // Player coords
             lines.get(0).setValue(Arrays.asList(xyz, Utils.getStyledText(cameraX, colorX),
                     Utils.getStyledText(cameraY, colorY), Utils.getStyledText(cameraZ, colorZ)));
 
-            BlockPos blockPos = cameraEntity.getPosition();
+            BlockPos blockPos = cameraEntity.blockPosition();
             // Block coords
             lines.get(1).setValue(Arrays.asList(Utils.getStyledText(blockPos.getX(), colorX),
                     Utils.getStyledText(blockPos.getY(), colorY), Utils.getStyledText(blockPos.getZ(), colorZ)));

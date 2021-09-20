@@ -1,22 +1,22 @@
 package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLineList;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MiscLeftModule extends BaseModule{
+public class MiscLeftModule extends BaseModule {
 
-    private static final List<String> VANILLA_DEBUG_LEFT = Arrays.asList("Minecraft", "Integrated", "C:", "E:", "P:", "Client", "ServerChunkCache:", "minecraft:overworld", "XYZ:", "Block:", "Chunk:", "Facing:", "Waiting", "SC:", "Sounds:", "CH", "SH", "Server Light:", "Biome:", "Local Difficulty:");
+    private static final List<String> VANILLA_DEBUG_LEFT = Arrays.asList("Minecraft", "Integrated", "C:", "E:", "P:", "Client", "ServerChunkCache:", "minecraft:overworld", "XYZ:", "Block:", "Chunk:", "Facing:", "Waiting", "SC:", "Sounds:", "CH", "SH", "Server Light:", "Biome:", "Local Difficulty:", "Chunks[");
     private int leftSideSize = 0;
 
     public MiscLeftModule() {
-        this.defaultNameColor = Color.fromInt(0xfdfd96);
-        this.defaultValueColor = Color.fromTextFormatting(TextFormatting.AQUA);
+        this.defaultNameColor = TextColor.fromRgb(0xfdfd96);
+        this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
         this.nameColor = defaultNameColor;
         this.valueColor = defaultValueColor;

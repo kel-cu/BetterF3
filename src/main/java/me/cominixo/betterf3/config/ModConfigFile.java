@@ -7,7 +7,7 @@ import me.cominixo.betterf3.modules.CoordsModule;
 import me.cominixo.betterf3.modules.EmptyModule;
 import me.cominixo.betterf3.modules.FpsModule;
 import me.cominixo.betterf3.utils.DebugLine;
-import net.minecraft.util.text.Color;
+import net.minecraft.network.chat.TextColor;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -83,18 +83,23 @@ public class ModConfigFile {
                     }
 
                     if (module.defaultNameColor != null) {
-                        module.nameColor = Color.fromInt(moduleConfig.getOrElse("name_color", module.defaultNameColor.getColor()));
+                        module.nameColor = TextColor.fromRgb(moduleConfig.getOrElse("name_color",
+                                module.defaultNameColor.getValue()));
                     }
                     if (module.defaultValueColor != null) {
-                        module.valueColor = Color.fromInt(moduleConfig.getOrElse("value_color", module.defaultValueColor.getColor()));
+                        module.valueColor = TextColor.fromRgb(moduleConfig.getOrElse("value_color",
+                                module.defaultValueColor.getValue()));
                     }
 
                     if (module instanceof CoordsModule) {
                         CoordsModule coordsModule = (CoordsModule) module;
 
-                        coordsModule.colorX = Color.fromInt(moduleConfig.getOrElse("color_x", coordsModule.defaultColorX.getColor()));
-                        coordsModule.colorY = Color.fromInt(moduleConfig.getOrElse("color_y", coordsModule.defaultColorY.getColor()));
-                        coordsModule.colorZ = Color.fromInt(moduleConfig.getOrElse("color_z", coordsModule.defaultColorZ.getColor()));
+                        coordsModule.colorX = TextColor.fromRgb(moduleConfig.getOrElse("color_x",
+                                coordsModule.defaultColorX.getValue()));
+                        coordsModule.colorY = TextColor.fromRgb(moduleConfig.getOrElse("color_y",
+                                coordsModule.defaultColorY.getValue()));
+                        coordsModule.colorZ = TextColor.fromRgb(moduleConfig.getOrElse("color_z",
+                                coordsModule.defaultColorZ.getValue()));
                     }
                     module.enabled = moduleConfig.getOrElse("enabled", true);
                 }
@@ -210,28 +215,26 @@ public class ModConfigFile {
         }
 
         if (baseModule.defaultNameColor != null) {
-            baseModule.nameColor = Color.fromInt(moduleConfig.getOrElse("name_color",
-                    baseModule.defaultNameColor.getColor()));
+            baseModule.nameColor = TextColor.fromRgb(moduleConfig.getOrElse("name_color",
+                    baseModule.defaultNameColor.getValue()));
         }
         if (baseModule.defaultValueColor != null) {
-            baseModule.valueColor = Color.fromInt(moduleConfig.getOrElse("value_color",
-                    baseModule.defaultValueColor.getColor()));
+            baseModule.valueColor = TextColor.fromRgb(moduleConfig.getOrElse("value_color",
+                    baseModule.defaultValueColor.getValue()));
         }
 
-        if (baseModule instanceof CoordsModule) {
-            CoordsModule coordsModule = (CoordsModule) baseModule;
+        if (baseModule instanceof CoordsModule coordsModule) {
 
-            coordsModule.colorX = Color.fromInt(moduleConfig.getOrElse("color_x", coordsModule.defaultColorX.getColor()));
-            coordsModule.colorY = Color.fromInt(moduleConfig.getOrElse("color_y", coordsModule.defaultColorY.getColor()));
-            coordsModule.colorZ = Color.fromInt(moduleConfig.getOrElse("color_z", coordsModule.defaultColorZ.getColor()));
+            coordsModule.colorX = TextColor.fromRgb(moduleConfig.getOrElse("color_x", coordsModule.defaultColorX.getValue()));
+            coordsModule.colorY = TextColor.fromRgb(moduleConfig.getOrElse("color_y", coordsModule.defaultColorY.getValue()));
+            coordsModule.colorZ = TextColor.fromRgb(moduleConfig.getOrElse("color_z", coordsModule.defaultColorZ.getValue()));
         }
 
-        if (baseModule instanceof FpsModule) {
-            FpsModule fpsModule = (FpsModule) baseModule;
+        if (baseModule instanceof FpsModule fpsModule) {
 
-            fpsModule.colorHigh = Color.fromInt(moduleConfig.getOrElse("color_high", fpsModule.defaultColorHigh.getColor()));
-            fpsModule.colorMed = Color.fromInt(moduleConfig.getOrElse("color_med", fpsModule.defaultColorMed.getColor()));
-            fpsModule.colorLow = Color.fromInt(moduleConfig.getOrElse("color_low", fpsModule.defaultColorLow.getColor()));
+            fpsModule.colorHigh = TextColor.fromRgb(moduleConfig.getOrElse("color_high", fpsModule.defaultColorHigh.getValue()));
+            fpsModule.colorMed = TextColor.fromRgb(moduleConfig.getOrElse("color_med", fpsModule.defaultColorMed.getValue()));
+            fpsModule.colorLow = TextColor.fromRgb(moduleConfig.getOrElse("color_low", fpsModule.defaultColorLow.getValue()));
         }
 
         baseModule.enabled = moduleConfig.getOrElse("enabled", true);
@@ -250,35 +253,33 @@ public class ModConfigFile {
         moduleConfig.set("name", module.id);
 
         if (module.nameColor != null) {
-            moduleConfig.set("name_color", module.nameColor.getColor());
+            moduleConfig.set("name_color", module.nameColor.getValue());
         }
         if (module.valueColor != null) {
-            moduleConfig.set("value_color", module.valueColor.getColor());
+            moduleConfig.set("value_color", module.valueColor.getValue());
         }
 
-        if (module instanceof CoordsModule) {
-            CoordsModule coordsModule = (CoordsModule) module;
+        if (module instanceof CoordsModule coordsModule) {
             if (coordsModule.colorX != null) {
-                moduleConfig.set("color_x", coordsModule.colorX.getColor());
+                moduleConfig.set("color_x", coordsModule.colorX.getValue());
             }
             if (coordsModule.colorY != null) {
-                moduleConfig.set("color_y", coordsModule.colorY.getColor());
+                moduleConfig.set("color_y", coordsModule.colorY.getValue());
             }
             if (coordsModule.colorZ != null) {
-                moduleConfig.set("color_z", coordsModule.colorZ.getColor());
+                moduleConfig.set("color_z", coordsModule.colorZ.getValue());
             }
         }
 
-        if (module instanceof FpsModule) {
-            FpsModule fpsModule = (FpsModule) module;
+        if (module instanceof FpsModule fpsModule) {
             if (fpsModule.colorHigh != null) {
-                moduleConfig.set("color_high", fpsModule.colorHigh.getColor());
+                moduleConfig.set("color_high", fpsModule.colorHigh.getValue());
             }
             if (fpsModule.colorMed != null) {
-                moduleConfig.set("color_med", fpsModule.colorMed.getColor());
+                moduleConfig.set("color_med", fpsModule.colorMed.getValue());
             }
             if (fpsModule.colorLow != null) {
-                moduleConfig.set("color_low", fpsModule.colorLow.getColor());
+                moduleConfig.set("color_low", fpsModule.colorLow.getValue());
             }
         }
 

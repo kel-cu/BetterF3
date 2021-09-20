@@ -1,31 +1,31 @@
 package me.treyruffy.betterf3.betterf3forge.mixin.chunk;
 
-import net.minecraft.client.renderer.ViewFrustum;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.ViewArea;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
-import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(WorldRenderer.class)
+@Mixin(LevelRenderer.class)
 public interface WorldRendererAccessor {
 
     @Accessor
-    ViewFrustum getViewFrustum();
+    ViewArea getViewArea();
 
     @Invoker
-    int callGetRenderedChunks();
+    int callCountRenderedChunks();
 
     @Accessor
-    int getRenderDistanceChunks();
+    int getLastViewDistance();
 
     @Accessor
-    ChunkRenderDispatcher getRenderDispatcher();
+    ChunkRenderDispatcher getChunkRenderDispatcher();
 
     @Accessor
-    ClientWorld getWorld();
+    ClientLevel getLevel();
 
     @Accessor
-    int getCountEntitiesRendered();
+    int getRenderedEntities();
 }
