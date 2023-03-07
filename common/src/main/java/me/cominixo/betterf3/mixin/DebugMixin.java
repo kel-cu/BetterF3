@@ -156,7 +156,7 @@ public abstract class DebugMixin {
         }
         final int y = 2 + height * i;
 
-        this.textRenderer.draw(list.get(i), windowWidth, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, false, 0, 15728880);
+        this.textRenderer.draw(list.get(i), windowWidth, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
       }
     }
     immediate.draw();
@@ -182,7 +182,6 @@ public abstract class DebugMixin {
     RenderSystem.setShader(GameRenderer::getPositionColorProgram);
     final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
     RenderSystem.enableBlend();
-    RenderSystem.disableTexture();
     RenderSystem.defaultBlendFunc();
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
@@ -242,7 +241,6 @@ public abstract class DebugMixin {
 
     }
     BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-    RenderSystem.enableTexture();
     RenderSystem.disableBlend();
 
     return VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
@@ -277,7 +275,7 @@ public abstract class DebugMixin {
           xPosLeft -= xPos;
         }
 
-        this.textRenderer.draw(list.get(i), xPosLeft, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, false, 0, 15728880);
+        this.textRenderer.draw(list.get(i), xPosLeft, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
       }
     }
     immediate.draw();

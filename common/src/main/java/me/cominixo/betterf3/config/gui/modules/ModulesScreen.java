@@ -101,7 +101,7 @@ public class ModulesScreen extends Screen {
   @Override
   public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta) {
     this.modulesListWidget.render(matrices, mouseX, mouseY, delta);
-    drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 0xFFFFFF);
+    drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 20, 0xFFFFFF);
     super.render(matrices, mouseX, mouseY, delta);
 
   }

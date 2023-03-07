@@ -52,7 +52,7 @@ public class ModConfigScreen extends Screen {
   @Override
   public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta) {
     this.renderBackground(matrices);
-    drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
+    drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
     super.render(matrices, mouseX, mouseY, delta);
   }
 }
