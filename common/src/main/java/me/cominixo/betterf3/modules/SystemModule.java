@@ -15,6 +15,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The System module.
@@ -61,6 +62,7 @@ public class SystemModule extends BaseModule {
     lines.add(new DebugLine("cpu"));
     lines.add(new DebugLine("display"));
     lines.add(new DebugLine("gpu"));
+    lines.add(new DebugLine("gpu_utilization"));
     lines.add(new DebugLine("opengl_version"));
     lines.add(new DebugLine("gpu_driver"));
 
@@ -103,6 +105,7 @@ public class SystemModule extends BaseModule {
 
     final String openGlVersion = versionSplit[0];
     final String gpuDriverVersion = String.join(" ", ArrayUtils.remove(versionSplit, 0));
+    final String gpuUtilization = gpuUtilization();
 
     lines.get(0).value(time);
     lines.get(1).value(javaVersion);
@@ -112,8 +115,9 @@ public class SystemModule extends BaseModule {
     lines.get(5).value(GlDebugInfo.getCpuInfo());
     lines.get(6).value(displayInfo);
     lines.get(7).value(GlDebugInfo.getRenderer());
-    lines.get(8).value(openGlVersion);
-    lines.get(9).value(gpuDriverVersion);
+    lines.get(8).value(gpuUtilization);
+    lines.get(9).value(openGlVersion);
+    lines.get(10).value(gpuDriverVersion);
   }
 
   private static final List<GarbageCollectorMXBean> GARBAGE_COLLECTORS = ManagementFactory.getGarbageCollectorMXBeans();
@@ -148,5 +152,13 @@ public class SystemModule extends BaseModule {
     }
 
     return l;
+  }
+
+  private static @NotNull String gpuUtilization() {
+    final double gpuUtilizationPercentage = MinecraftClient.getInstance().getGpuUtilizationPercentage();
+    if (gpuUtilizationPercentage > 0.0) {
+      return gpuUtilizationPercentage > 100.0 ? Formatting.RED + "100%" : Math.round(gpuUtilizationPercentage) + "%";
+    }
+    return "N/A";
   }
 }
