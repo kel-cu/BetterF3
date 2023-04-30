@@ -65,6 +65,7 @@ processResources {
 shadowJar {
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
+    relocate 'com.electronwill.nightconfig', 'me.cominixo.betterf3.libs.nightconfig'
 }
 
 remapJar {
