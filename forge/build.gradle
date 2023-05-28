@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2" // Use Shadow to make a JAR with dependencies
+    id "com.github.johnrengelman.shadow" version "8.1.1" // Use Shadow to make a JAR with dependencies
 }
 
 configurations {
@@ -58,7 +58,7 @@ shadowJar {
     exclude "betterf3.accesswidener"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier "dev-shadow"
 }
 
 remapJar {
@@ -70,7 +70,7 @@ remapJar {
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier "dev"
 }
 
 java {

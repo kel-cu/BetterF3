@@ -11,6 +11,7 @@ import me.cominixo.betterf3.modules.MiscRightModule;
 import me.cominixo.betterf3.utils.PositionEnum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -63,7 +64,7 @@ public abstract class DebugMixin {
   @SuppressWarnings("checkstyle:MethodName")
   @Shadow protected abstract List<String> getRightText();
 
-  @Shadow protected abstract void drawMetricsData(MatrixStack matrices, MetricsData metricsData, int x, int width,
+  @Shadow protected abstract void drawMetricsData(DrawContext context, MetricsData metricsData, int x, int width,
                                                   boolean showFps);
 
   /**
@@ -130,11 +131,11 @@ public abstract class DebugMixin {
   /**
    * Renders the text on the right side of the screen.
    *
-   * @param matrixStack matrixStack
+   * @param context Draw Context
    * @param ci Callback info
    */
-  @Inject(method = "renderRightText", at = @At("HEAD"), cancellable = true)
-  public void renderRightText(final MatrixStack matrixStack, final CallbackInfo ci) {
+  @Inject(method = "drawRightText", at = @At("HEAD"), cancellable = true)
+  public void drawRightText(final DrawContext context, final CallbackInfo ci) {
 
     if (GeneralOptions.disableMod) {
       return;
@@ -142,7 +143,7 @@ public abstract class DebugMixin {
 
     final List<Text> list = this.newRightText();
 
-    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.RIGHT, list, matrixStack);
+    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.RIGHT, list, context.getMatrices());
 
     for (int i = 0; i < list.size(); i++) {
 
@@ -156,7 +157,7 @@ public abstract class DebugMixin {
         }
         final int y = 2 + height * i;
 
-        this.textRenderer.draw(list.get(i), windowWidth, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        this.textRenderer.draw(list.get(i), windowWidth, y, 0xE0E0E0, GeneralOptions.shadowText, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
       }
     }
     immediate.draw();
@@ -250,18 +251,18 @@ public abstract class DebugMixin {
   /**
    * Renders the text on the left side of the screen.
    *
-   * @param matrixStack matrixStack
+   * @param context Draw Context
    * @param ci Callback info
    */
-  @Inject(method = "renderLeftText", at = @At("HEAD"), cancellable = true)
-  public void renderLeftText(final MatrixStack matrixStack, final CallbackInfo ci) {
+  @Inject(method = "drawLeftText", at = @At("HEAD"), cancellable = true)
+  public void drawLeftText(final DrawContext context, final CallbackInfo ci) {
 
     if (GeneralOptions.disableMod) {
       return;
     }
 
     final List<Text> list = this.newLeftText();
-    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.LEFT, list, matrixStack);
+    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.LEFT, list, context.getMatrices());
 
     for (int i = 0; i < list.size(); i++) {
 
@@ -275,7 +276,7 @@ public abstract class DebugMixin {
           xPosLeft -= xPos;
         }
 
-        this.textRenderer.draw(list.get(i), xPosLeft, y, 0xE0E0E0, GeneralOptions.shadowText, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        this.textRenderer.draw(list.get(i), xPosLeft, y, 0xE0E0E0, GeneralOptions.shadowText, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
       }
     }
     immediate.draw();
@@ -298,21 +299,21 @@ public abstract class DebugMixin {
   /**
    * Ensures that the TPS graph works.
    *
-   * @param matrices matrixStack
+   * @param context Draw Context
    * @param ci Callback info
    */
   @Inject(method = "render", at = @At(value = "HEAD"))
-  public void renderBefore(final MatrixStack matrices, final CallbackInfo ci) {
+  public void renderBefore(final DrawContext context, final CallbackInfo ci) {
     if (GeneralOptions.disableMod) {
       return;
     }
-    matrices.push();
+    context.getMatrices().push();
     if (this.client.options.debugTpsEnabled && this.client.world != null) {
       final int scaledWidth = this.client.getWindow().getScaledWidth();
-      this.drawMetricsData(matrices, this.client.getMetricsData(), 0, scaledWidth / 2, true);
+      this.drawMetricsData(context, this.client.getMetricsData(), 0, scaledWidth / 2, true);
       final IntegratedServer integratedServer = this.client.getServer();
       if (integratedServer != null) {
-        this.drawMetricsData(matrices, integratedServer.getMetricsData(), scaledWidth - Math.min(scaledWidth / 2, 240), scaledWidth / 2, false);
+        this.drawMetricsData(context, integratedServer.getMetricsData(), scaledWidth - Math.min(scaledWidth / 2, 240), scaledWidth / 2, false);
       }
     }
   }
@@ -320,30 +321,28 @@ public abstract class DebugMixin {
   /**
    * Modifies the font scale.
    *
-   * @param matrices matrixStack
+   * @param context Draw Context
    * @param ci Callback info
    */
-  @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;" +
-  "renderLeftText(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-  public void renderFontScaleBefore(final MatrixStack matrices, final CallbackInfo ci) {
+  @Inject(method = "method_51746", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;drawLeftText(Lnet/minecraft/client/gui/DrawContext;)V"))
+  public void renderFontScaleBefore(final DrawContext context, final CallbackInfo ci) {
     if (!GeneralOptions.disableMod) {
-      matrices.scale((float) GeneralOptions.fontScale, (float) GeneralOptions.fontScale, 1F);
+      context.getMatrices().scale((float) GeneralOptions.fontScale, (float) GeneralOptions.fontScale, 1F);
     }
   }
 
   /**
    * Fixes the font scale.
    *
-   * @param matrices matrixStack
+   * @param context Draw Context
    * @param ci CallbackInfo
    */
-  @Inject(method = "render", at = @At(value = "FIELD",
-  target = "Lnet/minecraft/client/option/GameOptions;debugTpsEnabled:Z"), cancellable = true)
-  public void renderFontScaleRightAfter(final MatrixStack matrices, final CallbackInfo ci) {
+  @Inject(method = "method_51746", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;debugTpsEnabled:Z"), cancellable = true)
+  public void renderFontScaleRightAfter(final DrawContext context, final CallbackInfo ci) {
     if (GeneralOptions.disableMod) {
       return;
     }
-    matrices.pop();
+    context.getMatrices().pop();
     this.client.getProfiler().pop();
     ci.cancel();
   }
@@ -351,11 +350,11 @@ public abstract class DebugMixin {
   /**
    * Renders the animation.
    *
-   * @param matrices matrixStack
+   * @param context Draw Context
    * @param ci Callback info
    */
   @Inject(method = "render", at = @At("HEAD"))
-  public void renderAnimation(final MatrixStack matrices, final CallbackInfo ci) {
+  public void renderAnimation(final DrawContext context, final CallbackInfo ci) {
 
     if (GeneralOptions.disableMod) {
       return;

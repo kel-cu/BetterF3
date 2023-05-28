@@ -8,10 +8,9 @@ import me.cominixo.betterf3.modules.CoordsModule;
 import me.cominixo.betterf3.modules.FpsModule;
 import me.cominixo.betterf3.utils.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -157,7 +156,7 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
     /**
      * Renders the module list widget.
      *
-     * @param matrices the Matrix Stack
+     * @param context the Draw Context
      * @param index the entry index
      * @param y the y location
      * @param x the x location
@@ -168,10 +167,10 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
      * @param hovered if the mouse is hovering
      * @param tickDelta the delta
      */
-    public void render(final MatrixStack matrices, final int index, final int y, final int x, final int entryWidth, final int entryHeight,
+    public void render(final DrawContext context, final int index, final int y, final int x, final int entryWidth, final int entryHeight,
                      final int mouseX, final int mouseY, final boolean hovered, final float tickDelta) {
 
-      this.client.textRenderer.draw(matrices, this.module.toString(), (float) (x + 32 + 3), (float) (y + 1), 0xffffff);
+      context.drawText(this.client.textRenderer, this.module.toString(), x + 35, y + 1, 0xffffff, true);
 
       final Text exampleText;
 
@@ -187,14 +186,13 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
         exampleText = Text.of("");
       }
 
-      this.client.textRenderer.draw(matrices, exampleText, (float) (x + 40 + 3), (float) (y + 13), 0xffffff);
+      context.drawText(this.client.textRenderer, exampleText, x + 43, y + 13, 0xffffff, true);
 
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      this.client.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_TEXTURE);
+      //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
       if (this.client.options.getTouchscreen().getValue() || hovered) {
         RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
-        DrawableHelper.fill(matrices, x, y, x + 32, y + 32, -1601138544);
+        context.fill(x, y, x + 32, y + 32, -1601138544);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         final int v = mouseX - x;
@@ -202,17 +200,17 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
 
         if (index > 0) {
           if (v < 16 && w < 16) {
-            DrawableHelper.drawTexture(matrices, x, y, 96.0F, 32.0F, 32, 32, 256, 256);
+            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 96, 32, 32, 32);
           } else {
-            DrawableHelper.drawTexture(matrices, x, y, 96.0F, 0.0F, 32, 32, 256, 256);
+            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 96, 0, 32, 32);
           }
         }
 
         if (index < ModuleListWidget.this.moduleEntries.size() - 1) {
           if (v < 16 && w > 16) {
-            DrawableHelper.drawTexture(matrices, x, y, 64.0F, 32.0F, 32, 32, 256, 256);
+            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 64, 32, 32, 32);
           } else {
-            DrawableHelper.drawTexture(matrices, x, y, 64.0F, 0.0F, 32, 32, 256, 256);
+            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 64, 0, 32, 32);
           }
         }
       }
@@ -259,7 +257,6 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
       this.modulesScreen.modulesListWidget.updateModules();
 
     }
-
   }
 
 }

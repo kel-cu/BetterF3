@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2" // Use Shadow to make a JAR with dependencies
+    id "com.github.johnrengelman.shadow" version "8.1.1" // Use Shadow to make a JAR with dependencies
 }
 
 configurations {
@@ -64,7 +64,7 @@ processResources {
 
 shadowJar {
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier.set("dev-shadow")
     relocate 'com.electronwill.nightconfig', 'me.cominixo.betterf3.libs.nightconfig'
 }
 
@@ -77,7 +77,7 @@ remapJar {
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier.set("dev")
 }
 
 java {
