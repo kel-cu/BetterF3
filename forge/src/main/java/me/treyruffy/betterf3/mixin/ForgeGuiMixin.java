@@ -1,8 +1,8 @@
 package me.treyruffy.betterf3.mixin;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,14 +31,14 @@ public abstract class ForgeGuiMixin {
    *
    * @param width width
    * @param height width
-   * @param mStack matrix stack
+   * @param guiGraphics the draw context
    * @param ci Callback info
    */
   @Inject(remap = false, method = "renderHUDText", at = @At(value = "INVOKE", opcode = Opcodes.PUTFIELD, target =
   "Lnet/minecraftforge/client/gui/overlay/ForgeGui$ForgeDebugScreenOverlay;update()V"), cancellable = true)
-  public void customDebugMenu(final int width, final int height, final MatrixStack mStack, final CallbackInfo ci) {
+  public void customDebugMenu(final int width, final int height, final DrawContext guiGraphics, final CallbackInfo ci) {
     // Sets up BetterF3's debug screen
-    new DebugHud(MinecraftClient.getInstance()).render(mStack);
+    new DebugHud(MinecraftClient.getInstance()).render(guiGraphics);
 
     this.getMinecraft().getProfiler().pop();
 
