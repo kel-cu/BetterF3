@@ -44,8 +44,9 @@ public class HelpModule extends BaseModule {
     this.enabledColor = this.defaultEnabledColor;
     this.disabledColor = this.defaultDisabledColor;
 
-    lines.add(new DebugLine("pie_graph"));
-    lines.add(new DebugLine("fps_tps"));
+    lines.add(new DebugLine("pie_graph_new"));
+    lines.add(new DebugLine("fps_tps_new"));
+    lines.add(new DebugLine("ping"));
     lines.add(new DebugLine("help"));
 
     for (final DebugLine line : lines) {
@@ -63,15 +64,19 @@ public class HelpModule extends BaseModule {
     final String visible = I18n.translate("text.betterf3.line.visible");
     final String hidden = I18n.translate("text.betterf3.line.hidden");
 
-    // Pie Graph (Shift+F3)
-    lines.get(0).value(client.options.debugProfilerEnabled ? Utils.styledText(visible, this.enabledColor)
+    // Pie Graph (F3+1)
+    lines.get(0).value(client.getDebugHud().shouldShowRenderingChart() ? Utils.styledText(visible, this.enabledColor)
       : Utils.styledText(hidden, this.disabledColor));
 
-    // FPS / TPS (Alt+F3)
-    lines.get(1).value(client.options.debugTpsEnabled ? Utils.styledText(visible, this.enabledColor)
+    // FPS / TPS (F3+2)
+    lines.get(1).value(client.getDebugHud().renderingAndTickChartsVisible ? Utils.styledText(visible, this.enabledColor)
+      : Utils.styledText(hidden, this.disabledColor));
+
+    // Ping / Bandwidth (F3+3)
+    lines.get(2).value(client.getDebugHud().shouldShowPacketSizeAndPingCharts() ? Utils.styledText(visible, this.enabledColor)
       : Utils.styledText(hidden, this.disabledColor));
 
     // For help
-    lines.get(2).value(I18n.translate("text.betterf3.line.help_press"));
+    lines.get(3).value(I18n.translate("text.betterf3.line.help_press"));
   }
 }

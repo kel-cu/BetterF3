@@ -65,4 +65,9 @@ public final class GeneralOptions {
    * Always shows the TPS graph when using F3.
    */
   public static boolean alwaysEnableTPS = false;
+
+  /**
+   * Always shows the ping graph when using F3.
+   */
+  public static boolean alwaysEnablePing = false;
 }

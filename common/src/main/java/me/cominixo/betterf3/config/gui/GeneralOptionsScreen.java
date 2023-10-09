@@ -113,7 +113,27 @@ public final class GeneralOptionsScreen {
     general.addEntry(entryBuilder.startBooleanToggle(Text.translatable("config.betterf3.always_enable_tps_graph"), GeneralOptions.alwaysEnableTPS)
     .setDefaultValue(false)
     .setTooltip(Text.translatable("config.betterf3.always_enable_tps_graph.tooltip"))
-    .setSaveConsumer(newValue -> GeneralOptions.alwaysEnableTPS = newValue)
+    .setSaveConsumer(newValue -> {
+      if (newValue && GeneralOptions.alwaysEnablePing) {
+        GeneralOptions.alwaysEnablePing = false;
+        GeneralOptions.alwaysEnableTPS = true;
+      } else {
+        GeneralOptions.alwaysEnableTPS = newValue;
+      }
+    })
+    .build());
+
+    general.addEntry(entryBuilder.startBooleanToggle(Text.translatable("config.betterf3.always_enable_ping_graph"), GeneralOptions.alwaysEnablePing)
+    .setDefaultValue(false)
+    .setTooltip(Text.translatable("config.betterf3.always_enable_ping_graph.tooltip"))
+    .setSaveConsumer(newValue -> {
+      if (newValue && GeneralOptions.alwaysEnableTPS) {
+        GeneralOptions.alwaysEnableTPS = false;
+        GeneralOptions.alwaysEnablePing = true;
+      } else {
+        GeneralOptions.alwaysEnablePing = newValue;
+      }
+    })
     .build());
 
     builder.transparentBackground();

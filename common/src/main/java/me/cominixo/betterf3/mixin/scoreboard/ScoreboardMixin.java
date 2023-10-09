@@ -26,7 +26,7 @@ public class ScoreboardMixin {
   @Inject(at = @At("HEAD"), method = "renderScoreboardSidebar", cancellable = true)
   public void init(final CallbackInfo info) {
     if (GeneralOptions.hideSidebar) {
-      if (this.client.options.debugEnabled) {
+      if (this.client.getDebugHud().shouldShowDebugHud()) {
         info.cancel();
       }
     }

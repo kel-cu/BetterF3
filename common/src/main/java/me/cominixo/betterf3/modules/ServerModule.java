@@ -3,6 +3,7 @@ package me.cominixo.betterf3.modules;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -49,7 +50,7 @@ public class ServerModule extends BaseModule {
     if (integratedServer != null) {
       serverString = I18n.translate("text.betterf3.line.integrated_server");
     } else if (client.player != null) {
-      serverString = client.player.getServerBrand();
+      serverString = Objects.requireNonNull(client.getNetworkHandler()).getBrand();
     }
 
     if (client.getNetworkHandler() != null) {

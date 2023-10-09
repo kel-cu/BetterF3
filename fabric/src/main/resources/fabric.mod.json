@@ -26,11 +26,11 @@
   },
   "depends": {
     "fabricloader": ">=0.14.9",
-    "minecraft": ">=1.20"
+    "minecraft": ">=1.20.2"
   },
   "recommends": {
-    "modmenu": ">=7.0.0"
+    "modmenu": ">=8.0.0"
   },
   "accessWidener" : "betterf3.accesswidener",
-  "mixins": ["betterf3.mixins.json"]
+  "mixins": ["betterf3.mixins.json", "betterf3.fabric.mixins.json"]
 }

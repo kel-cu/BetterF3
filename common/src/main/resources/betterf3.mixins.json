@@ -6,7 +6,6 @@
   "client": [
     "DebugMixin",
     "KeyboardMixin",
-    "autof3.AutomaticDebugMixin",
     "autof3.DebugOptionMixin",
     "bossbar.BossbarMixin",
     "chunk.ChunkBuilderMixin",

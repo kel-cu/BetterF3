@@ -100,40 +100,40 @@ publishing {
 
 unifiedPublishing {
     project {
-        displayName = "BetterF3 Fabric v${project.version} (${project.supported_minecraft_versions})"
+        displayName.set "BetterF3 Fabric v${project.version} (${project.supported_minecraft_versions})"
         version = project.version
         changelog = releaseChangelog()
-        releaseType = "release"
+        releaseType.set "release"
         List<String> mcVersions = project.supported_minecraft_versions_list.split(",")
-        gameVersions = mcVersions
-        gameLoaders = ["fabric","quilt"]
+        gameVersions.set mcVersions
+        gameLoaders.set {["fabric","quilt"]}
 
         mainPublication tasks.remapJar
 
         relations {
             depends {
-                curseforge = "cloth-config"
-                modrinth = "cloth-config"
+                curseforge.set "cloth-config"
+                modrinth.set "cloth-config"
             }
             optional {
-                curseforge = "modmenu"
-                modrinth = "modmenu"
+                curseforge.set "modmenu"
+                modrinth.set "modmenu"
             }
         }
 
         var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
-        if (CURSE_API_KEY != null) {
+        if (CURSE_API_KEY != null && CURSE_API_KEY instanceof String) {
             curseforge {
-                token = CURSE_API_KEY
+                token.set CURSE_API_KEY
                 id = rootProject.curseforge_id
                 gameVersions.addAll("Java 18","Java 17")
             }
         }
 
         var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-        if (MODRINTH_TOKEN != null) {
+        if (MODRINTH_TOKEN != null && MODRINTH_TOKEN instanceof String) {
             modrinth {
-                token = MODRINTH_TOKEN
+                token.set MODRINTH_TOKEN
                 id = rootProject.modrinth_id
             }
         }

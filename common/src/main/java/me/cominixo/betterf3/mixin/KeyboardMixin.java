@@ -5,7 +5,6 @@ import me.cominixo.betterf3.config.gui.ModConfigScreen;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.objectweb.asm.Opcodes;
@@ -14,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -27,9 +25,12 @@ import static me.cominixo.betterf3.utils.Utils.xPos;
  */
 @Mixin(Keyboard.class)
 public abstract class KeyboardMixin {
-  @Shadow @Final private MinecraftClient client;
+  @Shadow
+  @Final
+  private MinecraftClient client;
 
-  @Shadow protected abstract void debugLog(String key, Object... args);
+  @Shadow
+  protected abstract void debugLog(String key, Object... args);
 
   /**
    * Adds the config menu by pressing f3 + m.
@@ -60,7 +61,7 @@ public abstract class KeyboardMixin {
    * @param key the keyboard key with f3
    * @param cir the callback info
    */
-  @Inject(method = "processF3", at = @At("RETURN"))
+  @Inject(method = "processF3", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;)V", shift = At.Shift.AFTER, ordinal = 14))
   public void processF3Messages(final int key, final CallbackInfoReturnable<Boolean> cir) {
     if (key == 81) {
       this.client.inGameHud.getChatHud().addMessage(Text.literal(""));
@@ -70,52 +71,37 @@ public abstract class KeyboardMixin {
     }
   }
 
-  @Redirect(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;" +
-  "debugProfilerEnabled:Z", opcode = Opcodes.PUTFIELD, ordinal = 0))
-  private void alwaysEnableProfiler(final GameOptions options, final boolean value) {
+  @Inject(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;toggleDebugHud()V", opcode = Opcodes.PUTFIELD, ordinal = 0), cancellable = true)
+  private void animationAndAlwaysEnableProfiler(final long window, final int key, final int scancode, final int action, final int modifiers, final CallbackInfo ci) {
     if (!GeneralOptions.disableMod) {
-      if (GeneralOptions.alwaysEnableProfiler) {
-        options.debugProfilerEnabled = this.client.options.debugEnabled;
-        return;
-      }
-    }
-    options.debugProfilerEnabled = this.client.options.debugEnabled && Screen.hasShiftDown();
-  }
-
-  @Redirect(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;debugTpsEnabled:Z", opcode = Opcodes.PUTFIELD, ordinal = 0))
-  private void alwaysEnableTPS(final GameOptions options, final boolean value) {
-    if (!GeneralOptions.disableMod) {
-      if (GeneralOptions.alwaysEnableTPS) {
-        options.debugTpsEnabled = this.client.options.debugEnabled;
-        return;
-      }
-    }
-    options.debugTpsEnabled = this.client.options.debugEnabled && Screen.hasAltDown();
-  }
-
-  /**
-   * Plays the animation on f3 key-press.
-   *
-   * @param window window
-   * @param key key
-   * @param scancode scancode
-   * @param i i
-   * @param j j
-   * @param ci Callback info
-   */
-  @Inject(method = "onKey", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "net/minecraft/client" +
-  "/option/GameOptions.debugEnabled : Z"), cancellable = true)
-  public void onDebugActivate(final long window, final int key, final int scancode, final int i, final int j, final CallbackInfo ci) {
-
-    if (GeneralOptions.enableAnimations && !GeneralOptions.disableMod) {
-      if (this.client.options.debugEnabled) {
-        closingAnimation = true;
-        ci.cancel();
+      if (GeneralOptions.enableAnimations) {
+        if (this.client.getDebugHud().shouldShowDebugHud()) {
+          closingAnimation = true;
+          ci.cancel();
+        } else {
+          closingAnimation = false;
+          xPos = START_X_POS;
+          this.client.getDebugHud().toggleDebugHud();
+        }
       } else {
-        closingAnimation = false;
-        xPos = START_X_POS;
+        this.client.getDebugHud().toggleDebugHud();
       }
+      if (GeneralOptions.alwaysEnableProfiler) {
+        this.client.getDebugHud().renderingChartVisible = this.client.getDebugHud().shouldShowDebugHud();
+      }
+      if (GeneralOptions.alwaysEnableTPS) {
+        this.client.getDebugHud().renderingAndTickChartsVisible = this.client.getDebugHud().shouldShowDebugHud();
+      }
+      if (GeneralOptions.alwaysEnablePing) {
+        if (this.client.getDebugHud().shouldShowDebugHud() && !this.client.getDebugHud().renderingAndTickChartsVisible &&
+                !this.client.getDebugHud().shouldShowPacketSizeAndPingCharts()) {
+          this.client.getDebugHud().togglePacketSizeAndPingCharts();
+        }
+      }
+    } else {
+      this.client.getDebugHud().toggleDebugHud();
     }
+    ci.cancel();
   }
 
 }

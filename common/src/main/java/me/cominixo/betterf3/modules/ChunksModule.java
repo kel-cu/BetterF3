@@ -110,7 +110,7 @@ public class ChunksModule extends BaseModule {
     }
     final int renderedChunks = client.worldRenderer.getCompletedChunkCount();
 
-    final ChunkBuilder chunkBuilder = client.worldRenderer.chunkBuilder;
+    final ChunkBuilder chunkBuilder = client.worldRenderer.getChunkBuilder();
     final ChunkBuilderAccess chunkBuilderDuck = (ChunkBuilderAccess) chunkBuilder;
 
     if (client.world != null) {

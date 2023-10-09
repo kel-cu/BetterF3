@@ -26,7 +26,7 @@ public class BossbarMixin {
   @Inject(at = @At("HEAD"), method = "render", cancellable = true)
   public void init(final CallbackInfo info) {
     if (GeneralOptions.hideBossbar) {
-      if (this.client.options.debugEnabled) {
+      if (this.client.getDebugHud().shouldShowDebugHud()) {
         info.cancel();
       }
     }

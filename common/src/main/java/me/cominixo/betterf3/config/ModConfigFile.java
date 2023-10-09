@@ -53,6 +53,7 @@ public final class ModConfigFile {
     general.set("hide_bossbar", GeneralOptions.hideBossbar);
     general.set("always_show_profiler", GeneralOptions.alwaysEnableProfiler);
     general.set("always_show_tps", GeneralOptions.alwaysEnableTPS);
+    general.set("always_show_ping", GeneralOptions.alwaysEnablePing);
 
     final List<Config> configsLeft = new ArrayList<>();
 
@@ -286,6 +287,7 @@ public final class ModConfigFile {
       GeneralOptions.hideBossbar = general.getOrElse("hide_bossbar", true);
       GeneralOptions.alwaysEnableProfiler = general.getOrElse("always_show_profiler", false);
       GeneralOptions.alwaysEnableTPS = general.getOrElse("always_show_tps", false);
+      GeneralOptions.alwaysEnablePing = general.getOrElse("always_show_ping", false);
     }
 
     config.close();

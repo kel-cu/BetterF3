@@ -191,7 +191,7 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
       //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
       if (this.client.options.getTouchscreen().getValue() || hovered) {
-        RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
+        //RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
         context.fill(x, y, x + 32, y + 32, -1601138544);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -200,17 +200,17 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
 
         if (index > 0) {
           if (v < 16 && w < 16) {
-            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 96, 32, 32, 32);
+            context.drawGuiTexture(new Identifier("server_list/move_up_highlighted"), x, y, 32, 32);
           } else {
-            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 96, 0, 32, 32);
+            context.drawGuiTexture(new Identifier("server_list/move_up"), x, y, 32, 32);
           }
         }
 
         if (index < ModuleListWidget.this.moduleEntries.size() - 1) {
           if (v < 16 && w > 16) {
-            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 64, 32, 32, 32);
+            context.drawGuiTexture(new Identifier("server_list/move_down_highlighted"), x, y, 32, 32);
           } else {
-            context.drawTexture(new Identifier("textures/gui/server_selection.png"), x, y, 64, 0, 32, 32);
+            context.drawGuiTexture(new Identifier("server_list/move_down"), x, y, 32, 32);
           }
         }
       }
