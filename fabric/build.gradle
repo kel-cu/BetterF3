@@ -106,7 +106,7 @@ unifiedPublishing {
         releaseType.set "release"
         List<String> mcVersions = project.supported_minecraft_versions_list.split(",")
         gameVersions.set mcVersions
-        gameLoaders.set {["fabric","quilt"]}
+        gameLoaders = ["fabric","quilt"]
 
         mainPublication tasks.remapJar
 

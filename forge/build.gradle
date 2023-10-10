@@ -98,7 +98,7 @@ unifiedPublishing {
         changelog = releaseChangelog()
         List<String> mcVersions = project.supported_minecraft_versions_list.split(",")
         gameVersions.set(mcVersions)
-        gameLoaders.set {"forge"}
+        gameLoaders = ["forge"]
 
         mainPublication tasks.remapJar
 
