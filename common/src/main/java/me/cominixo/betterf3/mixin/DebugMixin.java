@@ -21,14 +21,13 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.text.Text;
-import net.minecraft.util.MetricsData;
 import net.minecraft.util.Util;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -64,15 +63,13 @@ public abstract class DebugMixin {
   @SuppressWarnings("checkstyle:MethodName")
   @Shadow protected abstract List<String> getRightText();
 
-  @Shadow protected abstract void drawMetricsData(DrawContext context, MetricsData metricsData, int x, int width,
-                                                  boolean showFps);
-
   /**
    * Sets up modules on the left side of the screen.
    *
    * @return the left side modules
    */
-  public List<Text> newLeftText() {
+  @Unique
+  public List<Text> betterF3$newLeftText() {
 
     final List<Text> list = new ArrayList<>();
 
@@ -103,7 +100,8 @@ public abstract class DebugMixin {
    *
    * @return the right side modules
    */
-  public List<Text> newRightText() {
+  @Unique
+  public List<Text> betterF3$newRightText() {
 
     final List<Text> list = new ArrayList<>();
 
@@ -141,9 +139,9 @@ public abstract class DebugMixin {
       return;
     }
 
-    final List<Text> list = this.newRightText();
+    final List<Text> list = this.betterF3$newRightText();
 
-    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.RIGHT, list, context.getMatrices());
+    final VertexConsumerProvider.Immediate immediate = this.betterF3$immediate(PositionEnum.RIGHT, list, context.getMatrices());
 
     for (int i = 0; i < list.size(); i++) {
 
@@ -173,8 +171,9 @@ public abstract class DebugMixin {
    * @param matrixStack The MatrixStack
    * @return VertexConsumerProvider
    */
-  public VertexConsumerProvider.Immediate immediate(final PositionEnum pos, final List<Text> list,
-                                                    final MatrixStack matrixStack) {
+  @Unique
+  public VertexConsumerProvider.Immediate betterF3$immediate(final PositionEnum pos, final List<Text> list,
+                                                             final MatrixStack matrixStack) {
 
     final float f = (float) (GeneralOptions.backgroundColor >> 24 & 255) / 255.0F;
     final float g = (float) (GeneralOptions.backgroundColor >> 16 & 255) / 255.0F;
@@ -261,8 +260,8 @@ public abstract class DebugMixin {
       return;
     }
 
-    final List<Text> list = this.newLeftText();
-    final VertexConsumerProvider.Immediate immediate = this.immediate(PositionEnum.LEFT, list, context.getMatrices());
+    final List<Text> list = this.betterF3$newLeftText();
+    final VertexConsumerProvider.Immediate immediate = this.betterF3$immediate(PositionEnum.LEFT, list, context.getMatrices());
 
     for (int i = 0; i < list.size(); i++) {
 
@@ -308,14 +307,6 @@ public abstract class DebugMixin {
       return;
     }
     context.getMatrices().push();
-    if (this.client.options.debugTpsEnabled && this.client.world != null) {
-      final int scaledWidth = this.client.getWindow().getScaledWidth();
-      this.drawMetricsData(context, this.client.getMetricsData(), 0, scaledWidth / 2, true);
-      final IntegratedServer integratedServer = this.client.getServer();
-      if (integratedServer != null) {
-        this.drawMetricsData(context, integratedServer.getMetricsData(), scaledWidth - Math.min(scaledWidth / 2, 240), scaledWidth / 2, false);
-      }
-    }
   }
 
   /**
@@ -324,7 +315,7 @@ public abstract class DebugMixin {
    * @param context Draw Context
    * @param ci Callback info
    */
-  @Inject(method = "method_51746", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;drawLeftText(Lnet/minecraft/client/gui/DrawContext;)V"))
+  @Inject(method = "method_51746", at = @At(value = "HEAD"))
   public void renderFontScaleBefore(final DrawContext context, final CallbackInfo ci) {
     if (!GeneralOptions.disableMod) {
       context.getMatrices().scale((float) GeneralOptions.fontScale, (float) GeneralOptions.fontScale, 1F);
@@ -337,14 +328,12 @@ public abstract class DebugMixin {
    * @param context Draw Context
    * @param ci CallbackInfo
    */
-  @Inject(method = "method_51746", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;debugTpsEnabled:Z"), cancellable = true)
+  @Inject(method = "method_51746", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;drawRightText(Lnet/minecraft/client/gui/DrawContext;)V", shift = At.Shift.AFTER))
   public void renderFontScaleRightAfter(final DrawContext context, final CallbackInfo ci) {
     if (GeneralOptions.disableMod) {
       return;
     }
     context.getMatrices().pop();
-    this.client.getProfiler().pop();
-    ci.cancel();
   }
 
   /**
@@ -353,7 +342,7 @@ public abstract class DebugMixin {
    * @param context Draw Context
    * @param ci Callback info
    */
-  @Inject(method = "render", at = @At("HEAD"))
+  @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V"))
   public void renderAnimation(final DrawContext context, final CallbackInfo ci) {
 
     if (GeneralOptions.disableMod) {
@@ -369,7 +358,7 @@ public abstract class DebugMixin {
       int i = ((START_X_POS / 2 + xPos) / 10) - 9;
 
       if (xPos != 0 && !closingAnimation) {
-        xPos /= GeneralOptions.animationSpeed;
+        xPos = (int) (xPos / GeneralOptions.animationSpeed);
         xPos -= i;
       }
 
@@ -380,7 +369,7 @@ public abstract class DebugMixin {
       if (closingAnimation) {
 
         xPos += i;
-        xPos *= GeneralOptions.animationSpeed;
+        xPos = (int) (xPos * GeneralOptions.animationSpeed);
 
         if (xPos >= 300) {
           this.client.options.debugEnabled = false;

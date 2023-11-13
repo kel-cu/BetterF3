@@ -80,7 +80,7 @@ public class DebugLine {
     } else {
       valueStyled = Utils.styledText(this.value, valueColor);
     }
-    if (this.value.toString().equals("")) {
+    if (this.value.toString().isEmpty()) {
       this.active = false;
     }
     return Text.translatable(this.format, nameStyled, valueStyled);
