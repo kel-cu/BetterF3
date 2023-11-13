@@ -80,7 +80,7 @@ public class DebugLine {
     } else {
       valueStyled = Utils.styledText(this.value, valueColor);
     }
-    if (this.value.toString().equals("")) {
+    if (this.value.toString().isEmpty()) {
       this.active = false;
     }
     return Text.translatable(this.format, nameStyled, valueStyled);
@@ -99,7 +99,7 @@ public class DebugLine {
       // format properly if value is a List (bad)
       final List<Object> values = new ArrayList<>();
 
-      if (!name.equals("")) {
+      if (!name.isEmpty()) {
         values.add(Utils.styledText(name, nameColor));
       }
       values.addAll(listValue);
