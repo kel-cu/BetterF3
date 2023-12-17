@@ -2,6 +2,7 @@ package me.cominixo.betterf3.mixin.chunk;
 
 import java.util.Queue;
 import me.cominixo.betterf3.ducks.ChunkBuilderAccess;
+import net.minecraft.client.render.chunk.BlockBufferBuilderPool;
 import net.minecraft.client.render.chunk.ChunkBuilder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,20 +19,21 @@ public class ChunkBuilderMixin implements ChunkBuilderAccess {
 
   @Shadow @Final private Queue<Runnable> uploadQueue;
 
-  @Shadow private volatile int bufferCount;
+  @Final
+  @Shadow private BlockBufferBuilderPool buffersPool;
 
   @Override
-  public int getQueuedTaskCount() {
+  public int betterF3$getQueuedTaskCount() {
     return this.queuedTaskCount;
   }
 
   @Override
-  public Queue<Runnable> getUploadQueue() {
+  public Queue<Runnable> betterF3$getUploadQueue() {
     return this.uploadQueue;
   }
 
   @Override
-  public int getBufferCount() {
-    return this.bufferCount;
+  public int betterF3$getBufferCount() {
+    return this.buffersPool.getAvailableBuilderCount();
   }
 }

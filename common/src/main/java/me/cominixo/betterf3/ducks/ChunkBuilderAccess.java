@@ -12,20 +12,20 @@ public interface ChunkBuilderAccess {
    *
    * @return The chunk batch.
    */
-  int getQueuedTaskCount();
+  int betterF3$getQueuedTaskCount();
 
   /**
    * Gets the chunks to upload.
    *
    * @return The amount of chunks to upload.
    */
-  Queue<Runnable> getUploadQueue();
+  Queue<Runnable> betterF3$getUploadQueue();
 
   /**
    * Gets the free buffer count.
    *
    * @return The free buffer count.
    */
-  int getBufferCount();
+  int betterF3$getBufferCount();
 
 }

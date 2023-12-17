@@ -63,7 +63,7 @@ public class ServerModule extends BaseModule {
     }
     String tickString = "";
     if (integratedServer != null) {
-      tickString = Integer.toString(Math.round(integratedServer.getTickTime()));
+      tickString = Integer.toString(Math.round(integratedServer.getAverageTickTime()));
     }
 
     final List<MutableText> serverStringList = new LinkedList<>(Arrays.asList(Utils.styledText(serverString, nameColor), Utils.styledText(tickString, nameColor)));
