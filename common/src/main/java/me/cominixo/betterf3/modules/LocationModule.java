@@ -22,8 +22,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.lighting.LevelLightEngine;
@@ -115,7 +115,8 @@ public class LocationModule extends BaseModule {
         if (serverWorld instanceof ServerLevel) {
           if (this.chunkFuture == null) {
             this.chunkFuture =
-            ((ServerLevel) serverWorld).getChunkSource().getChunkFuture(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false).thenApply((either) -> either.map((chunk) -> (LevelChunk) chunk, (chunk) -> null));
+            ((ServerLevel) serverWorld).getChunkSource().getChunkFuture(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false)
+              .thenApply((chunkResult) -> (LevelChunk) chunkResult.orElse(null));
           }
 
           if (this.chunkFuture == null) {

@@ -127,7 +127,7 @@ unifiedPublishing {
             modrinth {
                 token.set MODRINTH_TOKEN
                 id = rootProject.modrinth_id
-                releaseType = "release"
+                releaseType = project.releaseType
             }
         }
     }

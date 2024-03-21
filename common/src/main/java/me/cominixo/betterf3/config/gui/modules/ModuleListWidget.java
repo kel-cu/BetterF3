@@ -42,7 +42,6 @@ public class ModuleListWidget extends ObjectSelectionList<ModuleListWidget.Modul
                           final int height, final int y, final int itemHeight) {
     super(client, width, height, y, itemHeight);
     this.modulesScreen = modulesScreen;
-    this.setRenderBackground(false);
   }
 
   /**
