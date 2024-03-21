@@ -19,7 +19,7 @@ import me.cominixo.betterf3.modules.SystemModule;
 import me.cominixo.betterf3.modules.TargetModule;
 import me.cominixo.betterf3.utils.PositionEnum;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -69,7 +69,7 @@ public class BetterF3Forge {
       // Sets up Cloth Config if it is installed
       if (ModList.get().isLoaded("cloth_config"))
         ForgeModMenu.registerModsPage();
-      else LOGGER.info(I18n.translate("config.betterf3.need_cloth_config"));
+      else LOGGER.info(I18n.get("config.betterf3.need_cloth_config"));
     }
 
     private static void setupModules() {

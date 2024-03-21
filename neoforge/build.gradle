@@ -16,6 +16,9 @@ architectury {
 }
 
 loom {
+    neoForge {
+        accessWidenerPath = project(":common").loom.accessWidenerPath // Access widener file
+    }
     runs {
         client {
             property 'mixin.debug', 'true' // Tells neoforge to have debug on for Mixins
@@ -55,7 +58,6 @@ processResources {
 shadowJar {
     // Excludes these files from the JAR file
     exclude "fabric.mod.json"
-    exclude "betterf3.mixins.forgefabric.json"
 
     configurations = [project.configurations.shadowCommon]
     archiveClassifier.set("dev-shadow")
@@ -66,7 +68,8 @@ remapJar {
     dependsOn(shadowJar)
     archiveClassifier.set("NeoForge-${rootProject.minecraft_version}")
 
-    from rootProject.file("LICENSE.md")
+    from rootProject.file("LICENSE.txt")
+    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }
 
 jar {

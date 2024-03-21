@@ -4,11 +4,11 @@ import java.util.Collections;
 import me.cominixo.betterf3.mixin.ClientAccessor;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * The FPS module.
@@ -33,17 +33,17 @@ public class FpsModule extends BaseModule {
   /**
    * The default color for high fps.
    */
-  public final TextColor defaultColorHigh = TextColor.fromFormatting(Formatting.GREEN);
+  public final TextColor defaultColorHigh = TextColor.fromLegacyFormat(ChatFormatting.GREEN);
 
   /**
    * The default color for medium fps.
    */
-  public final TextColor defaultColorMed = TextColor.fromFormatting(Formatting.YELLOW);
+  public final TextColor defaultColorMed = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
   /**
    * The default color for low fps.
    */
-  public final TextColor defaultColorLow = TextColor.fromFormatting(Formatting.RED);
+  public final TextColor defaultColorLow = TextColor.fromLegacyFormat(ChatFormatting.RED);
 
   /**
    * Instantiates a new FPS module.
@@ -62,16 +62,16 @@ public class FpsModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
-    final int currentFps = ClientAccessor.betterF3$getCurrentFps();
+  public void update(final Minecraft client) {
+    final int currentFps = ClientAccessor.betterF3$getFps();
 
     final String fpsString = I18n
-      .translate("format.betterf3.fps", currentFps,
-        (double) client.options.getMaxFps().getValue() == GameOptions.MAX_FRAMERATE ?
-          I18n.translate("text.betterf3.line.fps.unlimited") :
-          client.options.getMaxFps().getValue(),
-        client.options.getEnableVsync().getValue() ?
-          I18n.translate("text.betterf3.line.fps.vsync") : "")
+      .get("format.betterf3.fps", currentFps,
+        (double) client.options.framerateLimit().get() == Options.UNLIMITED_FRAMERATE_CUTOFF ?
+          I18n.get("text.betterf3.line.fps.unlimited") :
+          client.options.framerateLimit().get(),
+        client.options.enableVsync().get() ?
+          I18n.get("text.betterf3.line.fps.vsync") : "")
       .trim();
 
     final TextColor color = switch (Utils.fpsColor(currentFps)) {

@@ -1,7 +1,7 @@
 package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 /**
  * An Empty module.
@@ -45,7 +45,7 @@ public class EmptyModule extends BaseModule {
   }
 
   @Override
-  public void update(final MinecraftClient client) {
+  public void update(final Minecraft client) {
     final int loopLines = this.emptyLines != this.displayedLines ? 20 : this.displayedLines;
     for (int i = 0; i < loopLines; i++) {
       lines.get(i).value("");

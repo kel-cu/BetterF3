@@ -2,8 +2,8 @@ package me.cominixo.betterf3.mixin.chunk;
 
 import java.util.Queue;
 import me.cominixo.betterf3.ducks.ChunkBuilderAccess;
-import net.minecraft.client.render.chunk.BlockBufferBuilderPool;
-import net.minecraft.client.render.chunk.ChunkBuilder;
+import net.minecraft.client.renderer.SectionBufferBuilderPool;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,28 +12,28 @@ import org.spongepowered.asm.mixin.Shadow;
 /**
  * Mixin to access volatile "chunks" field in ClientChunkManager.
  */
-@Mixin(ChunkBuilder.class)
+@Mixin(SectionRenderDispatcher.class)
 public class ChunkBuilderMixin implements ChunkBuilderAccess {
 
-  @Shadow private volatile int queuedTaskCount;
+  @Shadow private volatile int toBatchCount;
 
-  @Shadow @Final private Queue<Runnable> uploadQueue;
+  @Shadow @Final private Queue<Runnable> toUpload;
 
   @Final
-  @Shadow private BlockBufferBuilderPool buffersPool;
+  @Shadow private SectionBufferBuilderPool bufferPool;
 
   @Override
   public int betterF3$getQueuedTaskCount() {
-    return this.queuedTaskCount;
+    return this.toBatchCount;
   }
 
   @Override
   public Queue<Runnable> betterF3$getUploadQueue() {
-    return this.uploadQueue;
+    return this.toUpload;
   }
 
   @Override
   public int betterF3$getBufferCount() {
-    return this.buffersPool.getAvailableBuilderCount();
+    return this.bufferPool.getFreeBufferCount();
   }
 }

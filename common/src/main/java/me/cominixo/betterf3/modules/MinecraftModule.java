@@ -1,11 +1,11 @@
 package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
+import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * The Minecraft module.
@@ -17,7 +17,7 @@ public class MinecraftModule extends BaseModule {
    */
   public MinecraftModule() {
     defaultNameColor = TextColor.fromRgb(0xA0522D);
-    defaultValueColor = TextColor.fromFormatting(Formatting.DARK_GREEN);
+    defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN);
 
     this.nameColor = defaultNameColor;
     this.valueColor = defaultValueColor;
@@ -31,8 +31,8 @@ public class MinecraftModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
-    lines.get(0).value(SharedConstants.getGameVersion().getName() + " (" + client.getGameVersion() +
-      "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(client.getVersionType()) || client.options.getReducedDebugInfo().getValue() ? "" : "/" + client.getVersionType()) + ")");
+  public void update(final Minecraft client) {
+    lines.get(0).value(SharedConstants.getCurrentVersion().getName() + " (" + client.getLaunchedVersion() +
+      "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(client.getVersionType()) || client.options.reducedDebugInfo().get() ? "" : "/" + client.getVersionType()) + ")");
   }
 }

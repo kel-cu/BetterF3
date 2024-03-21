@@ -1,6 +1,6 @@
 package me.cominixo.betterf3.ducks;
 
-import net.minecraft.client.world.ClientChunkManager;
+import net.minecraft.client.multiplayer.ClientChunkCache;
 
 /**
  * The Chunk Cache Accessor.
@@ -13,5 +13,5 @@ public interface ClientChunkManagerAccess {
      *
      * @return The storage.
      */
-    ClientChunkManager.ClientChunkMap getChunks();
+    ClientChunkCache.Storage getChunks();
 }

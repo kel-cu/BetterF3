@@ -2,10 +2,10 @@ package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * The Help module.
@@ -15,12 +15,12 @@ public class HelpModule extends BaseModule {
   /**
    * Default enabled color.
    */
-  public final TextColor defaultEnabledColor = TextColor.fromFormatting(Formatting.GREEN);
+  public final TextColor defaultEnabledColor = TextColor.fromLegacyFormat(ChatFormatting.GREEN);
 
   /**
    * Default disabled color.
    */
-  public final TextColor defaultDisabledColor = TextColor.fromFormatting(Formatting.RED);
+  public final TextColor defaultDisabledColor = TextColor.fromLegacyFormat(ChatFormatting.RED);
 
   /**
    * Enabled color.
@@ -37,7 +37,7 @@ public class HelpModule extends BaseModule {
    */
   public HelpModule() {
     this.defaultNameColor = TextColor.fromRgb(0xfdfd96);
-    this.defaultValueColor = TextColor.fromFormatting(Formatting.AQUA);
+    this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
     this.nameColor = defaultNameColor;
     this.valueColor = defaultValueColor;
@@ -59,24 +59,24 @@ public class HelpModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
+  public void update(final Minecraft client) {
 
-    final String visible = I18n.translate("text.betterf3.line.visible");
-    final String hidden = I18n.translate("text.betterf3.line.hidden");
+    final String visible = I18n.get("text.betterf3.line.visible");
+    final String hidden = I18n.get("text.betterf3.line.hidden");
 
     // Pie Graph (F3+1)
-    lines.get(0).value(client.getDebugHud().shouldShowRenderingChart() ? Utils.styledText(visible, this.enabledColor)
+    lines.get(0).value(client.getDebugOverlay().showProfilerChart() ? Utils.styledText(visible, this.enabledColor)
       : Utils.styledText(hidden, this.disabledColor));
 
     // FPS / TPS (F3+2)
-    lines.get(1).value(client.getDebugHud().renderingAndTickChartsVisible ? Utils.styledText(visible, this.enabledColor)
+    lines.get(1).value(client.getDebugOverlay().renderFpsCharts ? Utils.styledText(visible, this.enabledColor)
       : Utils.styledText(hidden, this.disabledColor));
 
     // Ping / Bandwidth (F3+3)
-    lines.get(2).value(client.getDebugHud().shouldShowPacketSizeAndPingCharts() ? Utils.styledText(visible, this.enabledColor)
+    lines.get(2).value(client.getDebugOverlay().showNetworkCharts() ? Utils.styledText(visible, this.enabledColor)
       : Utils.styledText(hidden, this.disabledColor));
 
     // For help
-    lines.get(3).value(I18n.translate("text.betterf3.line.help_press"));
+    lines.get(3).value(I18n.get("text.betterf3.line.help_press"));
   }
 }

@@ -3,13 +3,13 @@ package me.cominixo.betterf3.modules;
 import java.util.Arrays;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The Coordinates module.
@@ -32,21 +32,21 @@ public class CoordsModule extends BaseModule {
   /**
    * The default color for the x position.
    */
-  public final TextColor defaultColorX = TextColor.fromFormatting(Formatting.RED);
+  public final TextColor defaultColorX = TextColor.fromLegacyFormat(ChatFormatting.RED);
   /**
    * The default color for the y position.
    */
-  public final TextColor defaultColorY = TextColor.fromFormatting(Formatting.GREEN);
+  public final TextColor defaultColorY = TextColor.fromLegacyFormat(ChatFormatting.GREEN);
   /**
    * The default color for the z position.
    */
-  public final TextColor defaultColorZ = TextColor.fromFormatting(Formatting.AQUA);
+  public final TextColor defaultColorZ = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
   /**
    * Instantiates a new Coordinates module.
    */
   public CoordsModule() {
-    this.defaultNameColor = TextColor.fromFormatting(Formatting.RED);
+    this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.RED);
 
     this.nameColor = defaultNameColor;
     this.colorX = this.defaultColorX;
@@ -68,11 +68,11 @@ public class CoordsModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
+  public void update(final Minecraft client) {
 
     final Entity cameraEntity = client.getCameraEntity();
 
-    final Text xyz =
+    final Component xyz =
     Utils.styledText("X", this.colorX).append(Utils.styledText("Y", this.colorY)).append(Utils.styledText("Z",
     this.colorZ));
 
@@ -85,7 +85,7 @@ public class CoordsModule extends BaseModule {
       lines.get(0).value(Arrays.asList(xyz, Utils.styledText(cameraX, this.colorX),
       Utils.styledText(cameraY, this.colorY), Utils.styledText(cameraZ, this.colorZ)));
 
-      final BlockPos blockPos = cameraEntity.getBlockPos();
+      final BlockPos blockPos = cameraEntity.blockPosition();
       // Block coords
       lines.get(1).value(Arrays.asList(Utils.styledText(blockPos.getX(), this.colorX),
       Utils.styledText(blockPos.getY(), this.colorY), Utils.styledText(blockPos.getZ(), this.colorZ)));
@@ -98,10 +98,10 @@ public class CoordsModule extends BaseModule {
       // Player velocity
       final Entity vehicle = cameraEntity.getRootVehicle();
       final int ticksPerSecond = 20;
-      final Vec3d velocity = vehicle != null ? vehicle.getVelocity() : cameraEntity.getVelocity();
-      final String vX = String.format("%.3f", velocity.getX() * ticksPerSecond);
-      final String vY = String.format("%.3f", velocity.getY() * ticksPerSecond);
-      final String vZ = String.format("%.3f", velocity.getZ() * ticksPerSecond);
+      final Vec3 velocity = vehicle != null ? vehicle.getDeltaMovement() : cameraEntity.getDeltaMovement();
+      final String vX = String.format("%.3f", velocity.x() * ticksPerSecond);
+      final String vY = String.format("%.3f", velocity.y() * ticksPerSecond);
+      final String vZ = String.format("%.3f", velocity.z() * ticksPerSecond);
       lines.get(4).value(Arrays.asList(Utils.styledText(vX, this.colorX),
       Utils.styledText(vY, this.colorY), Utils.styledText(vZ, this.colorZ)));
       lines.get(5).value(Utils.styledText(String.format("%.3f", velocity.length() * ticksPerSecond), this.defaultNameColor));

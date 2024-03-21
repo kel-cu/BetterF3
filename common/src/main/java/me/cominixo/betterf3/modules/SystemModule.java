@@ -1,6 +1,7 @@
 package me.cominixo.betterf3.modules;
 
-import com.mojang.blaze3d.platform.GlDebugInfo;
+import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.platform.Window;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
@@ -10,10 +11,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.Window;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextColor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,8 +46,8 @@ public class SystemModule extends BaseModule {
    * Instantiates a new System module.
    */
   public SystemModule() {
-    this.defaultNameColor = TextColor.fromFormatting(Formatting.GOLD);
-    this.defaultValueColor = TextColor.fromFormatting(Formatting.AQUA);
+    this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.GOLD);
+    this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
     this.nameColor = defaultNameColor;
     this.valueColor = defaultValueColor;
@@ -76,7 +76,7 @@ public class SystemModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
+  public void update(final Minecraft client) {
     final LocalDateTime currentTime = LocalDateTime.now();
     DateTimeFormatter timeFormatter;
     try {
@@ -99,9 +99,9 @@ public class SystemModule extends BaseModule {
     final String memoryUsage = String.format("% 2d%% %03d/%03d MB", usedMemory * 100 / maxMemory, usedMemory / 1024 / 1024, maxMemory / 1024 / 1024);
     final String allocationRate = String.format("% 2d MB/s", this.allocationRate(usedMemory) / 1024 / 1024);
     final String allocatedMemory = String.format("% 2d%% %03dMB", totalMemory * 100 / maxMemory, totalMemory / 1024 / 1024);
-    final String displayInfo = String.format("%d x %d (%s)", window.getFramebufferWidth(), window.getFramebufferHeight(), GlDebugInfo.getVendor());
+    final String displayInfo = String.format("%d x %d (%s)", window.getWidth(), window.getHeight(), GlUtil.getVendor());
 
-    final String[] versionSplit = GlDebugInfo.getVersion().split(" ");
+    final String[] versionSplit = GlUtil.getOpenGLVersion().split(" ");
 
     final String openGlVersion = versionSplit[0];
     final String gpuDriverVersion = String.join(" ", ArrayUtils.remove(versionSplit, 0));
@@ -112,9 +112,9 @@ public class SystemModule extends BaseModule {
     lines.get(2).value(this.memoryColorToggle ? Utils.percentColor((int) (usedMemory * 100 / maxMemory)) + memoryUsage : memoryUsage);
     lines.get(3).value(allocationRate);
     lines.get(4).value(allocatedMemory);
-    lines.get(5).value(GlDebugInfo.getCpuInfo());
+    lines.get(5).value(GlUtil.getCpuInfo());
     lines.get(6).value(displayInfo);
-    lines.get(7).value(GlDebugInfo.getRenderer());
+    lines.get(7).value(GlUtil.getRenderer());
     lines.get(8).value(gpuUtilization);
     lines.get(9).value(openGlVersion);
     lines.get(10).value(gpuDriverVersion);
@@ -155,9 +155,9 @@ public class SystemModule extends BaseModule {
   }
 
   private static @NotNull String gpuUtilization() {
-    final double gpuUtilizationPercentage = MinecraftClient.getInstance().getGpuUtilizationPercentage();
+    final double gpuUtilizationPercentage = Minecraft.getInstance().getGpuUtilization();
     if (gpuUtilizationPercentage > 0.0) {
-      return gpuUtilizationPercentage > 100.0 ? Formatting.RED + "100%" : Math.round(gpuUtilizationPercentage) + "%";
+      return gpuUtilizationPercentage > 100.0 ? ChatFormatting.RED + "100%" : Math.round(gpuUtilizationPercentage) + "%";
     }
     return "N/A";
   }

@@ -33,11 +33,11 @@ config = "betterf3.mixins.json"
 [[dependencies.betterf3]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.2,)"
+versionRange = "[1.20.3,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.betterf3]]
 modId = "cloth_config"
-versionRange = "[12.0.0,)"
+versionRange = "[13.0.0,)"
 mandatory = true

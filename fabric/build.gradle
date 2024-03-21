@@ -16,7 +16,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(file("src/main/resources/betterf3.accesswidener")) // Tells Loom where our Access Widener is
+    accessWidenerPath = project(":common").loom.accessWidenerPath // Tells Loom where our Access Widener is
 }
 
 repositories {
@@ -69,11 +69,12 @@ shadowJar {
 }
 
 remapJar {
+    injectAccessWidener = true
     inputFile.set(shadowJar.archiveFile)
     dependsOn(shadowJar)
     archiveClassifier.set("Fabric-${rootProject.minecraft_version}")
 
-    from rootProject.file("LICENSE.md")
+    from rootProject.file("LICENSE.txt")
 }
 
 jar {
@@ -87,7 +88,6 @@ java {
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
-    exclude 'betterf3.accessWidener'
 }
 
 publishing {

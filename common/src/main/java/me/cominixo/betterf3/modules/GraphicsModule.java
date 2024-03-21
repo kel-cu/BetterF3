@@ -1,12 +1,12 @@
 package me.cominixo.betterf3.modules;
 
 import me.cominixo.betterf3.utils.DebugLine;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.option.CloudRenderMode;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.CloudStatus;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -18,8 +18,8 @@ public class GraphicsModule extends BaseModule {
    * Instantiates a new Graphics module.
    */
   public GraphicsModule() {
-    this.defaultNameColor = TextColor.fromFormatting(Formatting.GOLD);
-    this.defaultValueColor = TextColor.fromFormatting(Formatting.AQUA);
+    this.defaultNameColor = TextColor.fromLegacyFormat(ChatFormatting.GOLD);
+    this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
     this.nameColor = defaultNameColor;
     this.valueColor = defaultValueColor;
@@ -36,25 +36,25 @@ public class GraphicsModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final MinecraftClient client) {
+  public void update(final Minecraft client) {
 
-    final String cloudString = client.options.getCloudRenderMode().getValue() == CloudRenderMode.OFF ? I18n.translate("text" +
+    final String cloudString = client.options.cloudStatus().get() == CloudStatus.OFF ? I18n.get("text" +
     ".betterf3.line.off")
-    : (client.options.getCloudRenderMode().getValue() == CloudRenderMode.FAST ? I18n.translate("text.betterf3.line.fast") :
-    I18n.translate("text" +
+    : (client.options.cloudStatus().get() == CloudStatus.FAST ? I18n.get("text.betterf3.line.fast") :
+    I18n.get("text" +
     ".betterf3.line.fancy") );
 
     // Render Distance
-    lines.get(0).value(client.worldRenderer.viewDistance);
+    lines.get(0).value(client.levelRenderer.lastViewDistance);
     // Graphics
-    lines.get(1).value(StringUtils.capitalize(client.options.getGraphicsMode().getValue().toString()));
+    lines.get(1).value(StringUtils.capitalize(client.options.graphicsMode().get().toString()));
     // Clouds
     lines.get(2).value(cloudString);
     // Biome Blend Radius
-    lines.get(3).value(client.options.getBiomeBlendRadius().getValue());
+    lines.get(3).value(client.options.biomeBlendRadius().get());
 
     // Shader
-    final PostEffectProcessor shaderEffect = client.gameRenderer.getPostProcessor();
+    final PostChain shaderEffect = client.gameRenderer.currentEffect();
     if (shaderEffect != null) {
       lines.get(4).value(shaderEffect.getName());
     } else {

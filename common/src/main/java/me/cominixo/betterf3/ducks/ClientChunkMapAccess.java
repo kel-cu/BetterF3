@@ -1,7 +1,7 @@
 package me.cominixo.betterf3.ducks;
 
 import java.util.concurrent.atomic.AtomicReferenceArray;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 /**
  * The Client Chunk Map Accessor.
@@ -14,6 +14,6 @@ public interface ClientChunkMapAccess {
    *
    * @return Gets Chunks
    */
-  AtomicReferenceArray<WorldChunk> getChunks();
+  AtomicReferenceArray<LevelChunk> getChunks();
 
 }

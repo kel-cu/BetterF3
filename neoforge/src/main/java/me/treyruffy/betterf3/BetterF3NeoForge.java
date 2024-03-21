@@ -19,7 +19,7 @@ import me.cominixo.betterf3.modules.SystemModule;
 import me.cominixo.betterf3.modules.TargetModule;
 import me.cominixo.betterf3.utils.PositionEnum;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.IExtensionPoint;
@@ -27,7 +27,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.NetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,12 +61,12 @@ public class BetterF3NeoForge {
 
       // Make sure the mod being absent on the other network side does not cause the client to display the server
       // as incompatible.
-      ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+      ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> true));
 
       // Sets up Cloth Config if it is installed
       if (ModList.get().isLoaded("cloth_config"))
         NeoForgeModMenu.registerModsPage();
-      else LOGGER.info(I18n.translate("config.betterf3.need_cloth_config"));
+      else LOGGER.info(I18n.get("config.betterf3.need_cloth_config"));
     }
 
     private static void setupModules() {

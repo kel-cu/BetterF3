@@ -6,7 +6,7 @@
   "server": [],
   "mixins": [],
   "client": [
-    "DebugLambdaMixin",
-    "ForgeGuiMixin"
+    "ForgeGuiMixin",
+    "ForgeDebugMixin"
   ]
 }

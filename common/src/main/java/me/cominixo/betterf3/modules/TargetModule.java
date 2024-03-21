@@ -5,16 +5,16 @@ import java.util.List;
 import me.cominixo.betterf3.utils.DebugLine;
 import me.cominixo.betterf3.utils.DebugLineList;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +27,7 @@ public class TargetModule extends BaseModule {
    */
   public TargetModule() {
     this.defaultNameColor = TextColor.fromRgb(0x00aaff);
-    this.defaultValueColor = TextColor.fromFormatting(Formatting.YELLOW);
+    this.defaultValueColor = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
     this.nameColor = defaultNameColor;
     this.valueColor = defaultValueColor;
@@ -50,33 +50,33 @@ public class TargetModule extends BaseModule {
    *
    * @param client the Minecraft client
    */
-  public void update(final @NotNull MinecraftClient client) {
+  public void update(final @NotNull Minecraft client) {
     final Entity cameraEntity = client.getCameraEntity();
 
     if (cameraEntity == null) {
       return;
     }
-    final HitResult blockHit = cameraEntity.raycast(20.0D, 0.0F, false);
-    final HitResult fluidHit = cameraEntity.raycast(20.0D, 0.0F, true);
+    final HitResult blockHit = cameraEntity.pick(20.0D, 0.0F, false);
+    final HitResult fluidHit = cameraEntity.pick(20.0D, 0.0F, true);
 
     BlockPos blockPos;
 
     if (blockHit.getType() == HitResult.Type.BLOCK) {
       blockPos = ((BlockHitResult) blockHit).getBlockPos();
-      assert client.world != null;
-      final BlockState blockState = client.world.getBlockState(blockPos);
+      assert client.level != null;
+      final BlockState blockState = client.level.getBlockState(blockPos);
 
       lines.get(0).value(blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
-      lines.get(1).value(String.valueOf(Registries.BLOCK.getId(blockState.getBlock())));
+      lines.get(1).value(String.valueOf(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())));
 
       final List<String> blockStates = new ArrayList<>();
 
-      blockState.getEntries().entrySet().forEach(entry -> blockStates.add(Utils.propertyToString(entry)));
+      blockState.getValues().entrySet().forEach(entry -> blockStates.add(Utils.propertyToString(entry)));
 
       ((DebugLineList) lines.get(2)).values(blockStates);
 
       final List<String> blockTags = new ArrayList<>();
-      blockState.streamTags().map(arg -> "#" + arg.id()).forEach(blockTags::add);
+      blockState.getTags().map(arg -> "#" + arg.location()).forEach(blockTags::add);
 
       ((DebugLineList) lines.get(3)).values(blockTags);
     } else {
@@ -85,23 +85,23 @@ public class TargetModule extends BaseModule {
       }
     }
 
-    if (fluidHit.getType() == net.minecraft.util.hit.HitResult.Type.BLOCK) {
+    if (fluidHit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
       blockPos = ((BlockHitResult) fluidHit).getBlockPos();
-      assert client.world != null;
-      final FluidState fluidState = client.world.getFluidState(blockPos);
+      assert client.level != null;
+      final FluidState fluidState = client.level.getFluidState(blockPos);
 
       lines.get(5).value(blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
-      lines.get(6).value(Registries.FLUID.getId(fluidState.getFluid()));
+      lines.get(6).value(BuiltInRegistries.FLUID.getKey(fluidState.getType()));
 
       final List<String> fluidStates = new ArrayList<>();
 
-      fluidState.getEntries().entrySet().forEach(entry -> fluidStates.add(Utils.propertyToString(entry)));
+      fluidState.getValues().entrySet().forEach(entry -> fluidStates.add(Utils.propertyToString(entry)));
 
       ((DebugLineList) lines.get(7)).values(fluidStates);
 
       final List<String> fluidTags = new ArrayList<>();
 
-      fluidState.streamTags().map(arg -> "#" + arg.id()).forEach(fluidTags::add);
+      fluidState.getTags().map(arg -> "#" + arg.location()).forEach(fluidTags::add);
 
       ((DebugLineList) lines.get(8)).values(fluidTags);
     } else {
@@ -109,9 +109,9 @@ public class TargetModule extends BaseModule {
         lines.get(i).active = false;
       }
     }
-    final Entity entity = client.targetedEntity;
+    final Entity entity = client.crosshairPickEntity;
     if (entity != null) {
-      lines.get(10).value(Registries.ENTITY_TYPE.getId(entity.getType()));
+      lines.get(10).value(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
     } else {
       lines.get(10).active = false;
     }

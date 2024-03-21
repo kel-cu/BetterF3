@@ -9,7 +9,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /**
  * The Add Module screen.
@@ -29,21 +29,20 @@ public final class AddModuleScreen {
 
   public static ConfigBuilder configBuilder(final ModulesScreen parent) {
 
-    final ConfigBuilder builder = ConfigBuilder.create()
-      .setParentScreen(parent);
+    final ConfigBuilder builder = ConfigBuilder.create().setParentScreen(parent);
 
     builder.setSavingRunnable(ModConfigFile.saveRunnable);
 
     final ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-    final ConfigCategory general = builder.getOrCreateCategory(Text.translatable("config.betterf3" +
+    final ConfigCategory general = builder.getOrCreateCategory(Component.translatable("config.betterf3" +
       ".category.general"));
 
-    final DropdownBoxEntry<BaseModule> dropdownEntry = entryBuilder.startDropdownMenu(Text.translatable(
+    final DropdownBoxEntry<BaseModule> dropdownEntry = entryBuilder.startDropdownMenu(Component.translatable(
       "config.betterf3.add_button.module_name"),
         DropdownMenuBuilder.TopCellElementBuilder.of(new EmptyModule(true),
           BaseModule::module,
-          object -> Text.translatable(object.toString()))).setSelections(BaseModule.distinctModules())
+          object -> Component.translatable(object.toString()))).setSelections(BaseModule.distinctModules())
         .setSaveConsumer((BaseModule newValue) -> {
           try {
             parent.modulesListWidget.addModule(newValue.getClass().getDeclaredConstructor().newInstance());

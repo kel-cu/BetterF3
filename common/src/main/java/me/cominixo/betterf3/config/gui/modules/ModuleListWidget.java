@@ -7,17 +7,17 @@ import me.cominixo.betterf3.modules.BaseModule;
 import me.cominixo.betterf3.modules.CoordsModule;
 import me.cominixo.betterf3.modules.FpsModule;
 import me.cominixo.betterf3.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * The Module list widget.
  */
-public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWidget.ModuleEntry> {
+public class ModuleListWidget extends ObjectSelectionList<ModuleListWidget.ModuleEntry> {
 
   /**
    * The modules screen.
@@ -38,10 +38,11 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
    * @param y             the y
    * @param itemHeight    the itemHeight
    */
-  public ModuleListWidget(final ModulesScreen modulesScreen, final MinecraftClient client, final int width,
+  public ModuleListWidget(final ModulesScreen modulesScreen, final Minecraft client, final int width,
                           final int height, final int y, final int itemHeight) {
     super(client, width, height, y, itemHeight);
     this.modulesScreen = modulesScreen;
+    this.setRenderBackground(false);
   }
 
   /**
@@ -50,7 +51,7 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
    * @return the scrollbar position x
    */
   protected int scrollbarPositionX() {
-    return super.getScrollbarPositionX() + 30;
+    return super.getScrollbarPosition() + 30;
   }
 
   /**
@@ -128,7 +129,7 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
    */
   public class ModuleEntry extends Entry<ModuleEntry> {
     private final ModulesScreen modulesScreen;
-    private final MinecraftClient client;
+    private final Minecraft client;
     /**
      * The Module.
      */
@@ -143,13 +144,13 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
     protected ModuleEntry(final ModulesScreen modulesScreen, final BaseModule module) {
       this.modulesScreen = modulesScreen;
       this.module = module;
-      this.client = MinecraftClient.getInstance();
+      this.client = Minecraft.getInstance();
     }
 
     // Fixes 1.17 crash
     @Override
-    public Text getNarration() {
-      return Text.of(this.module.toString());
+    public Component getNarration() {
+      return Component.nullToEmpty(this.module.toString());
     }
 
     /**
@@ -166,12 +167,12 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
      * @param hovered if the mouse is hovering
      * @param tickDelta the delta
      */
-    public void render(final DrawContext context, final int index, final int y, final int x, final int entryWidth, final int entryHeight,
+    public void render(final GuiGraphics context, final int index, final int y, final int x, final int entryWidth, final int entryHeight,
                      final int mouseX, final int mouseY, final boolean hovered, final float tickDelta) {
 
-      context.drawText(this.client.textRenderer, this.module.toString(), x + 35, y + 1, 0xffffff, true);
+      context.drawString(this.client.font, this.module.toString(), x + 35, y + 1, 0xffffff, true);
 
-      final Text exampleText;
+      final Component exampleText;
 
       if (this.module instanceof CoordsModule coordsModule) {
         exampleText = Utils.styledText("X", coordsModule.colorX).append(Utils.styledText("Y", coordsModule.colorY)).append(Utils.styledText("Z", coordsModule.colorZ)).append(Utils.styledText(": ", coordsModule.nameColor))
@@ -182,34 +183,34 @@ public class ModuleListWidget extends AlwaysSelectedEntryListWidget<ModuleListWi
       } else if (this.module.nameColor != null && this.module.valueColor != null) {
         exampleText = Utils.styledText("Name: ", this.module.nameColor).append(Utils.styledText("Value", this.module.valueColor));
       } else {
-        exampleText = Text.of("");
+        exampleText = Component.nullToEmpty("");
       }
 
-      context.drawText(this.client.textRenderer, exampleText, x + 43, y + 13, 0xffffff, true);
+      context.drawString(this.client.font, exampleText, x + 43, y + 13, 0xffffff, true);
 
       //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-      if (this.client.options.getTouchscreen().getValue() || hovered) {
+      if (this.client.options.touchscreen().get() || hovered) {
         //RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
         context.fill(x, y, x + 32, y + 32, -1601138544);
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         final int v = mouseX - x;
         final int w = mouseY - y;
 
         if (index > 0) {
           if (v < 16 && w < 16) {
-            context.drawGuiTexture(new Identifier("server_list/move_up_highlighted"), x, y, 32, 32);
+            context.blitSprite(new ResourceLocation("server_list/move_up_highlighted"), x, y, 32, 32);
           } else {
-            context.drawGuiTexture(new Identifier("server_list/move_up"), x, y, 32, 32);
+            context.blitSprite(new ResourceLocation("server_list/move_up"), x, y, 32, 32);
           }
         }
 
         if (index < ModuleListWidget.this.moduleEntries.size() - 1) {
           if (v < 16 && w > 16) {
-            context.drawGuiTexture(new Identifier("server_list/move_down_highlighted"), x, y, 32, 32);
+            context.blitSprite(new ResourceLocation("server_list/move_down_highlighted"), x, y, 32, 32);
           } else {
-            context.drawGuiTexture(new Identifier("server_list/move_down"), x, y, 32, 32);
+            context.blitSprite(new ResourceLocation("server_list/move_down"), x, y, 32, 32);
           }
         }
       }

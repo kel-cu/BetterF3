@@ -1,7 +1,7 @@
 package me.treyruffy.betterf3.mixin;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.Opcodes;
@@ -23,8 +23,7 @@ public abstract class ForgeGuiMixin {
    * @return the minecraft client
    */
   @SuppressWarnings("checkstyle:MethodName")
-  @Shadow
-  public abstract MinecraftClient getMinecraft();
+  @Shadow(remap = false) public abstract Minecraft getMinecraft();
 
   /**
    * Modifies the F3 Menu from Forge's to BetterF3.
@@ -36,9 +35,9 @@ public abstract class ForgeGuiMixin {
    */
   @Inject(remap = false, method = "renderHUDText", at = @At(value = "INVOKE", opcode = Opcodes.PUTFIELD, target =
   "Lnet/minecraftforge/client/gui/overlay/ForgeGui$OverlayAccess;update()V"), cancellable = true)
-  public void customDebugMenu(final int width, final int height, final DrawContext guiGraphics, final @NotNull CallbackInfo ci) {
+  public void customDebugMenu(final int width, final int height, final GuiGraphics guiGraphics, final @NotNull CallbackInfo ci) {
     // Sets up BetterF3's debug screen
-    this.getMinecraft().getDebugHud().render(guiGraphics);
+    this.getMinecraft().getDebugOverlay().render(guiGraphics);
 
     this.getMinecraft().getProfiler().pop();
 

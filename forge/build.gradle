@@ -16,11 +16,14 @@ architectury {
 }
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
         mixinConfigs = [
                 "betterf3.mixins.json",
-                "betterf3.forge.mixins.json",
-                "betterf3.forgefabric.mixins.json"
+                "betterf3.forge.mixins.json"
         ] // Mixin files used for this Forge Mod
         // betterf3.mixins.json is in the common directory
         // betterf3.forge.mixins.json is in the forge directory
@@ -56,7 +59,6 @@ processResources {
 shadowJar {
     // Excludes these files from the JAR file
     exclude "fabric.mod.json"
-    exclude "betterf3.accesswidener"
 
     configurations = [project.configurations.shadowCommon]
     archiveClassifier.set("dev-shadow")
@@ -67,7 +69,7 @@ remapJar {
     dependsOn(shadowJar)
     archiveClassifier.set("Forge-${rootProject.minecraft_version}")
 
-    from rootProject.file("LICENSE.md")
+    from rootProject.file("LICENSE.txt")
 }
 
 jar {
