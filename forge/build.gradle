@@ -117,7 +117,7 @@ unifiedPublishing {
             curseforge {
                 token.set CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll ("Java 18","Java 17")
+                gameVersions.addAll ("Java 21")
                 releaseType = "beta"
             }
         }

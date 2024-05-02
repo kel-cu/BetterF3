@@ -45,10 +45,10 @@ public abstract class KeyboardMixin {
       cir.setReturnValue(true);
     } else if (key == 70) {
       if (Screen.hasControlDown()) {
-        this.minecraft.options.simulationDistance().set(Mth.clamp((this.minecraft.options.simulationDistance().get() + (Screen.hasShiftDown() ? -1 : 1)), 5, (this.minecraft.is64Bit() && Runtime.getRuntime().maxMemory() >= 1000000000L) ? 32 : 16));
+        this.minecraft.options.simulationDistance().set(Mth.clamp((this.minecraft.options.simulationDistance().get() + (Screen.hasShiftDown() ? -1 : 1)), 5, 32));
         this.debugFeedbackTranslated("debug.betterf3.cycle_simulationdistance.message", this.minecraft.options.simulationDistance().get());
       } else {
-        this.minecraft.options.renderDistance().set(Mth.clamp((this.minecraft.options.renderDistance().get() + (Screen.hasShiftDown() ? -1 : 1)), 2, (this.minecraft.is64Bit() && Runtime.getRuntime().maxMemory() >= 1000000000L) ? 32 : 16));
+        this.minecraft.options.renderDistance().set(Mth.clamp((this.minecraft.options.renderDistance().get() + (Screen.hasShiftDown() ? -1 : 1)), 2, 32));
         this.debugFeedbackTranslated("debug.betterf3.cycle_renderdistance.message", this.minecraft.options.renderDistance().get());
       }
       cir.setReturnValue(true);

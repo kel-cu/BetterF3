@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * BetterF3 NeoForge Mod.
  */
-// The value here should match an entry in the META-INF/mods.toml file
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod("betterf3")
 public class BetterF3NeoForge {
 

@@ -47,10 +47,10 @@ dependencies {
 }
 
 processResources {
-    // Replaces the version in mods.toml with the project version
+    // Replaces the version in neoforge.mods.toml with the project version
     inputs.property "version", project.version
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand "version": project.version
     }
 }
@@ -117,7 +117,7 @@ unifiedPublishing {
             curseforge {
                 token.set CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll ("Java 18","Java 17")
+                gameVersions.addAll ("Java 21")
                 releaseType = "beta"
             }
         }
