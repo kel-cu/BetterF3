@@ -2,7 +2,7 @@ package me.treyruffy.betterf3;
 
 import me.cominixo.betterf3.config.gui.ModConfigScreen;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 /**
  * Used to create mod configuration in the NeoForge mod menu.
@@ -17,7 +17,7 @@ public final class NeoForgeModMenu {
    * Registers BetterF3 in the mod menu.
    */
   public static void registerModsPage() {
-    ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-    () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> new ModConfigScreen(parent)));
+    ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
+    () -> (client, parent) -> new ModConfigScreen(parent));
   }
 }

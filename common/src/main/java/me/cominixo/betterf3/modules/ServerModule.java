@@ -13,6 +13,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.TickRateManager;
 
 /**
  * The Server module.
@@ -32,6 +33,7 @@ public class ServerModule extends BaseModule {
     lines.add(new DebugLine("server_tick", "format.betterf3.server_tick", true));
     lines.add(new DebugLine("packets_sent"));
     lines.add(new DebugLine("packets_received"));
+    lines.add(new DebugLine("tick_manager_status"));
 
     for (final DebugLine line : lines) {
       line.inReducedDebug = true;
@@ -74,5 +76,20 @@ public class ServerModule extends BaseModule {
     }
 
     lines.get(0).value(serverStringList);
+
+    String tickManagerStatus = I18n.get("text.betterf3.line.tick_manager_status.normal");
+    if (client.level != null) {
+      final TickRateManager tickratemanager = client.level.tickRateManager();
+      if (integratedServer != null && integratedServer.tickRateManager().isSprinting()) {
+        tickManagerStatus = I18n.get("text.betterf3.line.tick_manager_status.sprinting");
+      } else if (tickratemanager.isSteppingForward()) {
+        tickManagerStatus = I18n.get("text.betterf3.line.tick_manager_status.stepping");
+      } else if (tickratemanager.isFrozen()) {
+        tickManagerStatus = I18n.get("text.betterf3.line.tick_manager_status.frozen");
+      }
+      lines.get(3).value(tickManagerStatus);
+    } else {
+      lines.get(3).active = false;
+    }
   }
 }

@@ -22,9 +22,7 @@ import me.cominixo.betterf3.utils.Utils;
 import net.minecraft.client.resources.language.I18n;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.IExtensionPoint;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
@@ -58,10 +56,6 @@ public class BetterF3NeoForge {
   private final static class ClientSetup {
     private static void setup(final IEventBus eventBus) {
       setupModules();
-
-      // Make sure the mod being absent on the other network side does not cause the client to display the server
-      // as incompatible.
-      ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> true));
 
       // Sets up Cloth Config if it is installed
       if (ModList.get().isLoaded("cloth_config"))

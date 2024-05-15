@@ -81,4 +81,10 @@ allprojects {
         options.compilerArgs +=	"-Xlint:-processing" // Fixes "no processor claimed any of these annotations" warning
     }
 
+    tasks.withType(JavaCompile).tap {
+        configureEach {
+            options.release = 21
+        }
+    }
+
 }
