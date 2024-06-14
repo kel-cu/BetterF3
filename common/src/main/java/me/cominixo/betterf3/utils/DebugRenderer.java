@@ -52,10 +52,9 @@ public final class DebugRenderer {
     final float h = (float) (GeneralOptions.backgroundColor >> 8 & 255) / 255.0F;
     final float k = (float) (GeneralOptions.backgroundColor & 255) / 255.0F;
     RenderSystem.setShader(GameRenderer::getPositionColorShader);
-    final BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+    final BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
-    bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
     for (int i = 0; i < list.size(); i++) {
       final int height = 9;
@@ -106,16 +105,16 @@ public final class DebugRenderer {
         y2 = j;
       }
 
-      bufferBuilder.vertex(matrix, (float) x1, (float) y2, 0.0F).color(g, h, k, f).endVertex();
-      bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0.0F).color(g, h, k, f).endVertex();
-      bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0.0F).color(g, h, k, f).endVertex();
-      bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0.0F).color(g, h, k, f).endVertex();
+      bufferBuilder.addVertex(matrix, (float) x1, (float) y2, 0.0F).setColor(g, h, k, f);
+      bufferBuilder.addVertex(matrix, (float) x2, (float) y2, 0.0F).setColor(g, h, k, f);
+      bufferBuilder.addVertex(matrix, (float) x2, (float) y1, 0.0F).setColor(g, h, k, f);
+      bufferBuilder.addVertex(matrix, (float) x1, (float) y1, 0.0F).setColor(g, h, k, f);
 
     }
-    BufferUploader.drawWithShader(bufferBuilder.end());
+    BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     RenderSystem.disableBlend();
 
-    return MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+    return Minecraft.getInstance().renderBuffers().bufferSource();
 
   }
 

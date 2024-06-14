@@ -199,17 +199,17 @@ public class ModuleListWidget extends ObjectSelectionList<ModuleListWidget.Modul
 
         if (index > 0) {
           if (v < 16 && w < 16) {
-            context.blitSprite(new ResourceLocation("server_list/move_up_highlighted"), x, y, 32, 32);
+            context.blitSprite(ResourceLocation.parse("server_list/move_up_highlighted"), x, y, 32, 32);
           } else {
-            context.blitSprite(new ResourceLocation("server_list/move_up"), x, y, 32, 32);
+            context.blitSprite(ResourceLocation.parse("server_list/move_up"), x, y, 32, 32);
           }
         }
 
         if (index < ModuleListWidget.this.moduleEntries.size() - 1) {
           if (v < 16 && w > 16) {
-            context.blitSprite(new ResourceLocation("server_list/move_down_highlighted"), x, y, 32, 32);
+            context.blitSprite(ResourceLocation.parse("server_list/move_down_highlighted"), x, y, 32, 32);
           } else {
-            context.blitSprite(new ResourceLocation("server_list/move_down"), x, y, 32, 32);
+            context.blitSprite(ResourceLocation.parse("server_list/move_down"), x, y, 32, 32);
           }
         }
       }
