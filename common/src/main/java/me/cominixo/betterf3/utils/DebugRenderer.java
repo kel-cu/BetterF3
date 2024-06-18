@@ -111,7 +111,11 @@ public final class DebugRenderer {
       bufferBuilder.addVertex(matrix, (float) x1, (float) y1, 0.0F).setColor(g, h, k, f);
 
     }
-    BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+    try {
+      BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+    } catch (final IllegalStateException ignored) {
+      // Ignore
+    }
     RenderSystem.disableBlend();
 
     return Minecraft.getInstance().renderBuffers().bufferSource();
